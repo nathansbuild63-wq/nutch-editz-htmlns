@@ -26,6 +26,7 @@
             overflow-x: hidden; text-align: center;
         }
 
+        /* OVERLAYS */
         #splash, #gatekeeper {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: #000; display: flex; flex-direction: column; 
@@ -36,6 +37,7 @@
 
         #splash img, #splash video { position: absolute; width: 100%; height: 100%; object-fit: cover; }
 
+        /* APP CONTENT */
         #app-content { 
             display: none; padding: 20px; min-height: 100vh; 
             background: radial-gradient(circle at top, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.7) 100%);
@@ -49,11 +51,9 @@
 
         .inner-content { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); padding: 20px; border-radius: 18px; }
         
-        /* PHOTO AD */
         .photo-ad { width: 100%; max-width: 500px; margin: 20px auto; border-radius: 12px; cursor: pointer; border: 3px solid #ff9d00; transition: transform 0.3s; }
-        .photo-ad:hover { transform: scale(1.02); }
 
-        /* AUTH CARD */
+        /* AUTH UI */
         .auth-card { background: white; padding: 35px; border-radius: 30px; color: black; width: 85%; max-width: 420px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         .guest-btn { margin-top: 15px; background: #eee; color: #555; padding: 10px; border-radius: 10px; border: none; width: 100%; cursor: pointer; font-size: 14px; }
         
@@ -75,13 +75,13 @@
     <div id="gatekeeper">
         <div class="auth-card">
             <h2 style="margin-top:0; color:#0062ff;">Identity Verification</h2>
-            <p style="font-size:14px">Solve the challenge and sign in to access ultra-sync edits.</p>
+            <p style="font-size:14px">Solve the challenge to enter Nutchellxer Editz.</p>
             
-            <div class="cf-turnstile" data-sitekey="0x4AAAAAACbZbO-hqA8mdhlk" data-callback="onCloudflareSuccess"></div>
+            <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-callback="onCloudflareSuccess"></div>
             
             <div id="auth-options" style="display:none; margin-top:20px;">
                 <div id="g_id_onload"
-                     data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+                     data-client_id="YOUR_GOOGLE_ID_HERE"
                      data-callback="handleGoogleSignIn">
                 </div>
                 <div class="g_id_signin" data-type="standard"></div>
@@ -137,17 +137,15 @@
         const myMedia = ["amongus-bugreport-1.detche"];    
         const myPrivates = ["private_leak.detche"]; 
         const RES_URL = "https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/";
-        const SECURE_KEY = "OTEyNjQ4"; // Base64 of 912648
+        const SECURE_KEY = "OTEyNjQ4"; 
         
         let isGuest = false;
 
-        // --- PHASE 1: SPLASH ---
         setTimeout(() => {
             document.getElementById('splash').classList.add('hidden');
             document.getElementById('gatekeeper').style.display = 'flex';
         }, 3000);
 
-        // --- PHASE 2: GATEKEEPER ---
         function onCloudflareSuccess(token) {
             document.getElementById('auth-options').style.display = 'block';
         }
@@ -164,7 +162,6 @@
             startApp();
         }
 
-        // --- ADS ---
         function triggerAdRedirect() {
             window.open('https://www.highperformanceformat.com/example-ad-link', '_blank');
         }
@@ -175,13 +172,11 @@
             }
         }, 60000);
 
-        // --- PHASE 3: APP ---
         function startApp() {
             document.getElementById('gatekeeper').style.display = 'none';
             document.getElementById('app-content').style.display = 'block';
-            
             if(isGuest) {
-                document.getElementById('private-msg').innerText = "PRIVATE ACCESS RESTRICTED (Sign in with Google to unlock)";
+                document.getElementById('private-msg').innerText = "PRIVATE ACCESS RESTRICTED (Sign in required)";
                 document.getElementById('private-controls').style.display = 'none';
             }
             build();
@@ -194,9 +189,7 @@
                 const con = document.getElementById('private-container');
                 con.style.display = 'block';
                 myPrivates.forEach(f => con.appendChild(createMedia(f, false)));
-            } else {
-                alert("Incorrect Access Code.");
-            }
+            } else { alert("Incorrect Access Code."); }
         }
 
         function createMedia(file, isFeat) {
@@ -234,4 +227,3 @@
     </script>
 </body>
 </html>
- 
