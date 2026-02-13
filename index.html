@@ -38,7 +38,6 @@
         }
         #user-avatar { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--blue); margin-right: 10px; }
         #user-name { font-size: 13px; font-weight: bold; color: white; }
-        #sudo-badge { display: none; background: #ff4d4d; color: white; font-size: 9px; padding: 2px 6px; border-radius: 4px; margin-left: 8px; font-weight: 900; }
         
         #logout-menu { 
             display: none; background: rgba(0,0,0,0.8); margin-top: 8px;
@@ -59,10 +58,15 @@
         /* GAMES UI */
         #games-section { background: var(--blue); color: white; }
         .game-card { 
-            background: rgba(0,0,0,0.3); color: white; padding: 15px; margin: 10px; 
+            background: rgba(0,0,0,0.3); color: white; padding: 10px; margin: 10px; 
             border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); cursor: pointer;
-            display: inline-block; width: 110px; font-size: 12px; transition: 0.2s;
+            display: inline-block; vertical-align: middle; transition: 0.2s;
+            overflow: hidden;
         }
+        .game-card.text-only { width: 110px; font-size: 12px; padding: 15px 10px; }
+        .game-card.with-logo { width: 80px; height: 80px; padding: 0; }
+        .game-card.with-logo img { width: 100%; height: 100%; object-fit: cover; }
+
         #game-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: #000; z-index: 100005; display: none; flex-direction: column;
@@ -123,7 +127,6 @@
         <div class="profile-pill" onclick="toggleLogout()">
             <img id="user-avatar" src="">
             <span id="user-name">Syncing...</span>
-            <span id="sudo-badge">SUDO</span>
         </div>
         <div id="logout-menu" onclick="location.reload()">Logout Session</div>
     </div>
@@ -164,10 +167,13 @@
         
         <div id="private-section" class="section-container">
             <div class="inner-content">
-                <b>🔒 PRIVATE (SUDO)</b>
+                <b>🔒 PRIVATE ARCHIVE</b>
                 <div id="private-auth-ui">
-                    <p id="private-msg">Archive Restricted</p>
-                    <button class="guest-btn" style="background:white; color:black; width:auto; padding:8px 25px;" onclick="verifySudo()">Verify SUDO Identity</button>
+                    <p id="private-msg">Sync Collapse Prevention Active</p>
+                    <div id="private-controls">
+                        <input type="password" id="privatePass" placeholder="Access Code" style="color:#000; background:#fff; padding:10px; border-radius:8px; border:1px solid #ccc; width:60%;">
+                        <button class="guest-btn" style="width:auto; display:inline-block; padding:10px 20px; margin-top:0;" onclick="checkPrivatePass()">Unlock</button>
+                    </div>
                 </div>
                 <div id="private-container" style="display: none;"></div>
             </div>
@@ -183,13 +189,15 @@
 
     <script>
         const RES_URL = "https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/";
-        const ADMIN_EMAIL = "nutchellexer@gmail.com"; // Your SUDO email
+        const SECURE_KEY = "OTEyNjQ4"; 
         const GITHUB_CLIENT_ID = "Ov23liA7Zyd7Euym0lYi"; 
-        
-        let currentUser = { name: "Guest", email: null, isSudo: false };
         let currentVideo = null;
 
-        const Mygames = ["Ascend=https://nathansbuild63-wq.github.io/Ascend/"];
+        // Games Config: "Name=URL=LogoURL" or "Name=URL"
+        const Mygames = [
+            "Ascend=https://nathansbuild63-wq.github.io/Ascend/=https://raw.githubusercontent.com/nathansbuild63-wq.github.io/Ascend/main/icon.png",
+            "Example Game=https://example.com"
+        ];
 
         window.onload = () => {
             if (!localStorage.getItem('nutch_cookies')) {
@@ -198,7 +206,7 @@
             const params = new URLSearchParams(window.location.search);
             if (params.has('code')) {
                 document.getElementById('splash').classList.add('hidden');
-                updateProfile("GitHub User", "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png", "nutchellexer@gmail.com"); 
+                updateProfile("GitHub User", "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"); 
                 startApp();
             } else {
                 setTimeout(() => {
@@ -209,34 +217,19 @@
         };
 
         function onCloudflareSuccess() { document.getElementById('auth-options').style.display = 'block'; }
-        
         function handleGoogleSignIn(response) {
             const data = JSON.parse(atob(response.credential.split('.')[1]));
-            updateProfile(data.given_name, data.picture, data.email);
+            updateProfile(data.given_name, data.picture);
             startApp();
         }
 
         function loginGithub() { window.location.href = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&scope=user`; }
-        function continueAsGuest() { updateProfile("Guest User", RES_URL + "ic_launcher.png", null); startApp(); }
+        function continueAsGuest() { updateProfile("Guest User", RES_URL + "ic_launcher.png"); startApp(); }
 
-        function updateProfile(name, img, email) {
-            currentUser = { name, email, isSudo: (email === ADMIN_EMAIL) };
+        function updateProfile(name, img) {
             document.getElementById('user-avatar').src = img;
             document.getElementById('user-name').innerText = name;
             document.getElementById('user-profile').style.display = 'flex';
-            if(currentUser.isSudo) document.getElementById('sudo-badge').style.display = 'inline-block';
-        }
-
-        function verifySudo() {
-            if (!currentUser.email) {
-                alert("SUDO ERROR: Unauthorized guest session. Please login via Google/GitHub.");
-            } else if (currentUser.isSudo) {
-                document.getElementById('private-auth-ui').style.display = 'none';
-                document.getElementById('private-container').style.display = 'block';
-                alert("SUDO GRANTED: Sync state elevated.");
-            } else {
-                alert(`SUDO DENIED: ${currentUser.email} is not authorized.`);
-            }
         }
 
         function startApp() {
@@ -248,10 +241,20 @@
 
         function buildGames() {
             const container = document.getElementById('games-container');
+            container.innerHTML = "";
             Mygames.forEach(gameStr => {
-                const [name, url] = gameStr.split('=');
+                const parts = gameStr.split('=');
+                const name = parts[0], url = parts[1], logo = parts[2];
+                
                 const card = document.createElement('div');
-                card.className = 'game-card'; card.innerText = name;
+                if(logo) {
+                    card.className = 'game-card with-logo';
+                    card.innerHTML = `<img src="${logo}" alt="${name}">`;
+                } else {
+                    card.className = 'game-card text-only';
+                    card.innerText = name;
+                }
+
                 card.onclick = () => {
                     document.getElementById('active-game-name').innerText = name;
                     document.getElementById('game-frame').src = url;
@@ -269,9 +272,16 @@
 
         function createMedia(file, isFeat) {
             let el = document.createElement('video');
-            el.controls = true; el.className = isFeat ? 'featured-item' : 'stack';
-            el.src = RES_URL + file; el.poster = RES_URL + "nutchellxer.thumb";
-            el.addEventListener('play', (e) => { if (currentVideo && currentVideo !== e.target) currentVideo.pause(); currentVideo = e.target; });
+            el.controls = true; 
+            el.preload = "auto"; // Instant loading
+            el.muted = true; // Required for many browsers to auto-buffer
+            el.className = isFeat ? 'featured-item' : 'stack';
+            el.src = RES_URL + file; 
+            el.poster = RES_URL + "nutchellxer.thumb";
+            el.addEventListener('play', (e) => { 
+                if (currentVideo && currentVideo !== e.target) currentVideo.pause(); 
+                currentVideo = e.target; 
+            });
             return el;
         }
 
@@ -282,9 +292,17 @@
             };
             populate(myFeatured, 'featured-container', true);
             populate(myMedia, 'media-container', false);
-            const arch = document.getElementById('video-container');
+            const arch = document.getElementById('private-container');
             arch.innerHTML = "";
             myArchive.forEach(f => arch.appendChild(createMedia(f, false)));
+        }
+
+        function checkPrivatePass() {
+            const input = document.getElementById('privatePass').value;
+            if(btoa(input) === SECURE_KEY) {
+                document.getElementById('private-auth-ui').style.display = 'none';
+                document.getElementById('private-container').style.display = 'block';
+            } else { alert("Access Denied"); }
         }
 
         function acceptCookies() { localStorage.setItem('nutch_cookies', 'true'); document.getElementById('cookie-popup').classList.remove('show'); }
@@ -299,4 +317,3 @@
     </script>
 </body>
 </html>
- 
