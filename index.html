@@ -25,7 +25,6 @@
             overflow-x: hidden; text-align: center;
         }
 
-        /* --- SPLASH --- */
         #splash {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: #000; display: flex; justify-content: center;
@@ -38,7 +37,6 @@
 
         #app-content { 
             display: none; padding: 20px; min-height: 100vh; 
-            /* BG VISIBILITY FIX: Lighter overlay to show nutchellxer.bg */
             background: radial-gradient(circle at top, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.7) 100%);
             padding-bottom: 220px;
         }
@@ -52,10 +50,17 @@
         
         /* Verification UI */
         #private-auth { padding: 20px; }
-        .cf-turnstile { display: inline-block; margin-bottom: 15px; }
+        .pass-input { 
+            width: 80%; padding: 12px; border-radius: 10px; border: none; 
+            margin-top: 10px; text-align: center; font-size: 16px; 
+            background: rgba(255,255,255,0.2); color: #fff; outline: none;
+        }
+        .pass-btn { 
+            margin-top: 10px; padding: 10px 20px; border-radius: 10px; 
+            border: none; background: #fff; color: #4b0082; font-weight: bold; cursor: pointer;
+        }
 
         .stack, .featured-item { width: 100%; max-width: 500px; margin: 25px auto; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); background: var(--glass); backdrop-filter: var(--blur); display: block; }
-        audio.stack { height: 50px; width: 90%; }
         
         #drag-footer { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 420px; background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(25px); border: 1px solid rgba(0, 98, 255, 0.4); border-radius: 24px; z-index: 9998; }
         .drag-handle { padding: 12px; cursor: move; font-size: 10px; color: var(--blue); }
@@ -87,8 +92,13 @@
             <div class="inner-content">
                 <b>🔒 PRIVATE</b>
                 <div id="private-auth">
-                    <p style="font-size: 12px; margin-bottom: 15px;">Security Check Required</p>
-                    <div class="cf-turnstile" data-sitekey="0x4AAAAAACbZbO-hqA8mdhlk" data-callback="unlockPrivate"></div>
+                    <p id="auth-status" style="font-size: 12px; margin-bottom: 10px;">Security Check Required</p>
+                    <div class="cf-turnstile" data-sitekey="0x4AAAAAACbZbO-hqA8mdhlk" data-callback="showPassInput"></div>
+                    <div id="pass-area" style="display: none;">
+                        <input type="password" id="privatePass" class="pass-input" placeholder="Enter Password">
+                        <br>
+                        <button class="pass-btn" onclick="checkPass()">Unlock</button>
+                    </div>
                 </div>
                 <div id="private-container" style="display: none;"></div>
             </div>
@@ -112,16 +122,30 @@
 
         const RES_URL = "https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/";
 
-        // TRIGGERED ON SUCCESSFUL CLOUDFLARE CHALLENGE
-        function unlockPrivate(token) {
+        // 1. SHOW PASS AFTER CLOUDFLARE
+        function showPassInput(token) {
             if(token) {
-                console.log("Human Verified. Unlocking...");
-                document.getElementById('private-auth').style.display = 'none';
-                const con = document.getElementById('private-container');
-                con.style.display = 'block';
-                // Only build private media AFTER verification
-                myPrivates.forEach(f => con.appendChild(createMedia(f, false)));
+                document.querySelector('.cf-turnstile').style.display = 'none';
+                document.getElementById('auth-status').innerText = "Human Verified. Enter Password:";
+                document.getElementById('pass-area').style.display = 'block';
             }
+        }
+
+        // 2. CHECK PASSWORD
+        function checkPass() {
+            const input = document.getElementById('privatePass').value;
+            if(input === "912648") {
+                unlockPrivate();
+            } else {
+                alert("Access Denied: Incorrect Password");
+            }
+        }
+
+        function unlockPrivate() {
+            document.getElementById('private-auth').style.display = 'none';
+            const con = document.getElementById('private-container');
+            con.style.display = 'block';
+            myPrivates.forEach(f => con.appendChild(createMedia(f, false)));
         }
 
         function createMedia(file, isFeat) {
@@ -164,6 +188,7 @@
             document.getElementById('splash').classList.add('hidden');
         }
 
+        // FOOTER DRAG
         const box = document.getElementById("drag-footer");
         const handle = document.getElementById("drag-handle");
         let xOff = 0, yOff = 0, active = false, startX, startY;
