@@ -24,30 +24,23 @@
             background-repeat: no-repeat;
             color: white;
             font-family: 'Segoe UI', system-ui, sans-serif;
-            overflow-x: hidden;
         }
 
-        /* FIXED SPLASH: Added transition for smooth exit */
         #splash {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: black; display: flex; justify-content: center;
             align-items: center; z-index: 9999;
-            opacity: 1;
-            transition: opacity 0.8s ease;
         }
-        #splash video { width: 100%; height: 100%; object-fit: cover; }
 
         #app-content { 
             display: none; padding: 20px; min-height: 100vh; 
-            /* Lightened background to show nutchellxer.bg */
+            /* THE FIX: Changed opacity from 0.85 to 0.4 so your background image is visible */
             background: radial-gradient(circle at top, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%);
             padding-bottom: 220px;
-            text-align: center;
         }
 
         .section-container {
             padding: 2px; border-radius: 20px; margin: 30px auto; max-width: 550px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         #featured-section { background: var(--gold); color: #000; }
         #media-section { background: var(--orange); color: #000; }
@@ -124,8 +117,8 @@
     <script>
         const myArchive = ["yoshi.detche", "amongus.detche", "car.detche", "1st.detche", "meowsol-edit.detche" ];
         const myFeatured = ["moza.detche", "my-dog.detche"]; 
-        const myMedia = ["amongus-bugreport-1"];    
-        const myPrivates = []; 
+        const myMedia = ["amongus-bugreport-1.detche"];    // Add files here for ORANGE section
+        const myPrivates = []; // Add files here for VIOLET section
 
         const RES_URL = "https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/";
 
@@ -134,7 +127,6 @@
             el.className = isFeat ? 'featured-item' : 'stack';
             el.src = RES_URL + file;
             el.controls = true;
-            el.playsInline = true;
             el.onerror = () => { el.style.display='none'; };
             return el;
         }
@@ -148,14 +140,8 @@
         }
 
         function startApp() {
-            const splash = document.getElementById('splash');
-            const content = document.getElementById('app-content');
-
-            // Fade out splash
-            splash.style.opacity = '0';
-            
-            // Show content
-            content.style.display = 'block';
+            document.getElementById('splash').style.display = 'none';
+            document.getElementById('app-content').style.display = 'block';
             
             populate(myFeatured, 'featured-container', true);
             populate(myMedia, 'media-container', false);
@@ -163,16 +149,9 @@
 
             const archive = document.getElementById('video-container');
             myArchive.forEach(f => archive.appendChild(createMedia(f, false)));
-
-            // Remove splash from DOM after animation
-            setTimeout(() => {
-                splash.style.display = 'none';
-            }, 800);
         }
 
-        // Set to 3000ms (3 seconds)
-        setTimeout(startApp, 3000);
+        setTimeout(startApp, 2500);
     </script>
 </body>
 </html>
- 
