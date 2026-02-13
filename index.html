@@ -23,7 +23,7 @@
             overflow-x: hidden; text-align: center;
         }
 
-        /* --- HYBRID SPLASH (Image + Video) --- */
+        /* --- HYBRID SPLASH --- */
         #splash {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: #000; display: flex; justify-content: center;
@@ -52,7 +52,7 @@
         
         /* Media Elements */
         .stack, .featured-item { width: 100%; max-width: 500px; margin: 25px auto; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); background: var(--glass); backdrop-filter: var(--blur); display: block; }
-        audio.stack { height: 50px; }
+        audio.stack { height: 50px; width: 90%; }
 
         #drag-footer { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 420px; background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(25px); border: 1px solid rgba(0, 98, 255, 0.4); border-radius: 24px; z-index: 9998; }
         .drag-handle { padding: 12px; cursor: move; font-size: 10px; color: var(--blue); }
@@ -62,7 +62,7 @@
 <body>
 
     <div id="splash">
-        <img src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/nutchellxer.splash">
+        <img src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/nutchellxer.splash" alt="Splash Image">
         <video id="splashVideo" autoplay playsinline>
             <source src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/nutchellxer.splash" type="video/mp4">
         </video>
@@ -104,22 +104,27 @@
 
         const RES_URL = "https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/";
 
-        // Detects if the file is likely an image or audio based on common patterns
         function createMedia(file, isFeat) {
             let el;
-            const fileName = file.toLowerCase();
+            const name = file.toLowerCase();
             
-            // Basic detection logic for .detche contents
-            if (fileName.includes('img') || fileName.includes('png') || fileName.includes('jpg')) {
+            // KEYWORD DETECTION: Checks if it's an Image, Audio, or Video
+            const isImg = name.includes('img') || name.includes('pic') || name.includes('jpg') || name.includes('png');
+            const isAudio = name.includes('audio') || name.includes('mp3') || name.includes('sound');
+
+            if (isImg) {
                 el = document.createElement('img');
-            } else if (fileName.includes('audio') || fileName.includes('mp3') || fileName.includes('wav')) {
+            } else if (isAudio) {
                 el = document.createElement('audio');
                 el.controls = true;
             } else {
                 el = document.createElement('video');
                 el.controls = true;
                 el.poster = RES_URL + "nutchellxer.thumb";
-                el.onplay = () => { document.querySelectorAll('video, audio').forEach(m => { if (m !== el) m.pause(); }); };
+                el.playsInline = true;
+                el.onplay = () => { 
+                    document.querySelectorAll('video, audio').forEach(m => { if (m !== el) m.pause(); }); 
+                };
             }
 
             el.className = isFeat ? 'featured-item' : 'stack';
@@ -149,7 +154,7 @@
             document.getElementById('splash').classList.add('hidden');
         }
 
-        // FOOTER DRAG
+        // FOOTER DRAG LOGIC
         const box = document.getElementById("drag-footer");
         const handle = document.getElementById("drag-handle");
         let xOff = 0, yOff = 0, active = false, startX, startY;
@@ -168,6 +173,7 @@
         });
         window.addEventListener("touchend", () => active = false);
 
+        // Forced Start after 3s
         setTimeout(startApp, 3000); 
     </script>
 </body>
