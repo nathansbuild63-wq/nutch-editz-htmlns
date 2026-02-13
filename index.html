@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -56,9 +56,11 @@
             background: rgba(255,255,255,0.2); color: #fff; outline: none;
         }
         .pass-btn { 
-            margin-top: 10px; padding: 10px 20px; border-radius: 10px; 
+            margin-top: 15px; padding: 10px 25px; border-radius: 12px; 
             border: none; background: #fff; color: #4b0082; font-weight: bold; cursor: pointer;
+            transition: transform 0.2s;
         }
+        .pass-btn:active { transform: scale(0.95); }
 
         .stack, .featured-item { width: 100%; max-width: 500px; margin: 25px auto; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); background: var(--glass); backdrop-filter: var(--blur); display: block; }
         
@@ -95,9 +97,9 @@
                     <p id="auth-status" style="font-size: 12px; margin-bottom: 10px;">Security Check Required</p>
                     <div class="cf-turnstile" data-sitekey="0x4AAAAAACbZbO-hqA8mdhlk" data-callback="showPassInput"></div>
                     <div id="pass-area" style="display: none;">
-                        <input type="password" id="privatePass" class="pass-input" placeholder="Enter Password">
+                        <input type="password" id="privatePass" class="pass-input" placeholder="Enter Access Code">
                         <br>
-                        <button class="pass-btn" onclick="checkPass()">Unlock</button>
+                        <button class="pass-btn" onclick="checkPass()">Unlock Archive</button>
                     </div>
                 </div>
                 <div id="private-container" style="display: none;"></div>
@@ -121,8 +123,10 @@
         const myPrivates = ["private_leak.detche"]; 
 
         const RES_URL = "https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/";
+        
+        
+        const SECURE_KEY = "OTEyNjQ4"; 
 
-        // 1. SHOW PASS AFTER CLOUDFLARE
         function showPassInput(token) {
             if(token) {
                 document.querySelector('.cf-turnstile').style.display = 'none';
@@ -131,13 +135,14 @@
             }
         }
 
-        // 2. CHECK PASSWORD
         function checkPass() {
             const input = document.getElementById('privatePass').value;
-            if(input === "912648") {
+            // Encodes user input to Base64 and compares it to our SECURE_KEY
+            if(btoa(input) === SECURE_KEY) {
                 unlockPrivate();
             } else {
-                alert("Access Denied: Incorrect Password");
+                alert("Invalid Access Code.");
+                document.getElementById('privatePass').value = "";
             }
         }
 
