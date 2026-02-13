@@ -34,13 +34,12 @@
         }
         #gatekeeper { background: rgba(0,0,0,0.95); backdrop-filter: blur(25px); display: none; }
         .hidden { display: none !important; }
-
         #splash img, #splash video { position: absolute; width: 100%; height: 100%; object-fit: cover; }
 
         /* APP CONTENT */
         #app-content { 
             display: none; padding: 20px; min-height: 100vh; 
-            background: radial-gradient(circle at top, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.7) 100%);
+            background: radial-gradient(circle at top, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%);
             padding-bottom: 220px;
         }
 
@@ -50,17 +49,16 @@
         #private-section { background: var(--violet); color: #fff; }
 
         .inner-content { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); padding: 20px; border-radius: 18px; }
-        
-        .photo-ad { width: 100%; max-width: 500px; margin: 20px auto; border-radius: 12px; cursor: pointer; border: 3px solid #ff9d00; transition: transform 0.3s; }
 
         /* AUTH UI */
-        .auth-card { background: white; padding: 35px; border-radius: 30px; color: black; width: 85%; max-width: 420px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .guest-btn { margin-top: 15px; background: #eee; color: #555; padding: 10px; border-radius: 10px; border: none; width: 100%; cursor: pointer; font-size: 14px; }
+        .auth-card { background: white; padding: 35px; border-radius: 30px; color: black; width: 85%; max-width: 420px; }
+        .guest-btn { margin-top: 15px; background: #eee; color: #555; padding: 10px; border-radius: 10px; border: none; width: 100%; cursor: pointer; }
         
-        .pass-input { width: 80%; padding: 12px; border-radius: 10px; border: 1px solid #ccc; margin: 10px 0; text-align: center; }
+        .pass-input { width: 80%; padding: 12px; border-radius: 10px; border: 1px solid #ccc; margin: 10px 0; text-align: center; background: rgba(255,255,255,0.2); color: white; }
+        #private-section .pass-input { color: white; border-color: rgba(255,255,255,0.3); }
         .pass-btn { padding: 10px 25px; border-radius: 12px; border: none; background: #4b0082; color: #fff; font-weight: bold; cursor: pointer; }
 
-        .stack, .featured-item { width: 100%; max-width: 500px; margin: 25px auto; border-radius: 15px; background: var(--glass); backdrop-filter: var(--blur); display: block; border: 1px solid rgba(255,255,255,0.1); }
+        .stack, .featured-item { width: 100%; max-width: 500px; margin: 25px auto; border-radius: 15px; background: var(--glass); backdrop-filter: var(--blur); display: block; }
         #drag-footer { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 420px; background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(0, 98, 255, 0.4); border-radius: 24px; z-index: 9998; }
         .footer-btn { display: inline-block; padding: 12px 18px; margin: 6px; background: var(--blue); color: white; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 13px; }
     </style>
@@ -77,17 +75,17 @@
             <h2 style="margin-top:0; color:#0062ff;">Identity Verification</h2>
             <p style="font-size:14px">Solve the challenge to enter Nutchellxer Editz.</p>
             
-            <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-callback="onCloudflareSuccess"></div>
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAACbZbO-hqA8mdhlk" data-callback="onCloudflareSuccess"></div>
             
             <div id="auth-options" style="display:none; margin-top:20px;">
                 <div id="g_id_onload"
-                     data-client_id="YOUR_GOOGLE_ID_HERE"
+                     data-client_id="647540282944-usu3rkob8emv3i5rt3g4b9napi7qe7db.apps.googleusercontent.com"
                      data-callback="handleGoogleSignIn">
                 </div>
                 <div class="g_id_signin" data-type="standard"></div>
                 
                 <hr style="margin:20px 0; border:0; border-top:1px solid #ddd;">
-                <button class="guest-btn" onclick="continueAsGuest()">Continue as Guest (Limited Access)</button>
+                <button class="guest-btn" onclick="continueAsGuest()">Continue as Guest (Limited)</button>
             </div>
         </div>
     </div>
@@ -95,10 +93,8 @@
     <div id="app-content">
         <div id="header">
             <img src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/ic_launcher.png" style="width: 90px; height: 90px; border-radius: 22px; border: 2px solid var(--blue);">
-            <h1 style="text-shadow: 0 0 10px rgba(0,98,255,0.5)">Nutchellxer Editz</h1>
+            <h1>Nutchellxer Editz</h1>
         </div>
-
-        <img src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/nutchellxer.thumb" class="photo-ad" onclick="triggerAdRedirect()" alt="Sponsor Ad">
 
         <div id="featured-section" class="section-container">
             <div class="inner-content"><b>⭐ FEATURED</b><div id="featured-container"></div></div>
@@ -112,7 +108,7 @@
             <div class="inner-content">
                 <b>🔒 PRIVATE</b>
                 <div id="private-auth-ui">
-                    <p id="private-msg" style="font-size: 12px;">Private Archive Locked</p>
+                    <p id="private-msg">Archive Locked</p>
                     <div id="private-controls">
                         <input type="password" id="privatePass" class="pass-input" placeholder="Access Code">
                         <button class="pass-btn" onclick="checkPrivatePass()">Unlock</button>
@@ -125,58 +121,49 @@
         <div id="video-container"></div>
 
         <div id="drag-footer">
-            <div class="drag-handle" style="padding:10px; cursor:move; color:var(--blue); font-size:10px;">•••• DRAG TO POSITION ••••</div>
+            <div class="drag-handle" style="padding:10px; cursor:move; color:var(--blue); font-size:10px;">•••• DRAG ••••</div>
             <a href="https://vm.tiktok.com/ZS9J2r4GP6EU2-MRcbj/" class="footer-btn">TikTok</a>
             <a href="mailto:nutchellexer@gmail.com" class="footer-btn">Mail Me</a>
         </div>
     </div>
 
     <script>
-        const myArchive = ["yoshi.detche", "amongus.detche", "car.detche"];
-        const myFeatured = ["moza.detche", "mydog.detche"]; 
+        const myArchive = ["yoshi.detche", "amongus.detche", "car.detche", "1st.detche", "meowsol-edit.detche"];
+        const myFeatured = ["moza.detche", "test-edit.detche", "mydog.detche"]; 
         const myMedia = ["amongus-bugreport-1.detche"];    
-        const myPrivates = ["private_leak.detche"]; 
+        const myPrivates = []; 
         const RES_URL = "https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/";
         const SECURE_KEY = "OTEyNjQ4"; 
         
         let isGuest = false;
 
+        // 1. Splash Timer
         setTimeout(() => {
             document.getElementById('splash').classList.add('hidden');
             document.getElementById('gatekeeper').style.display = 'flex';
         }, 3000);
 
+        // 2. Gatekeeper Logic
         function onCloudflareSuccess(token) {
             document.getElementById('auth-options').style.display = 'block';
         }
 
         function handleGoogleSignIn(response) {
             isGuest = false;
-            triggerAdRedirect(); 
             startApp();
         }
 
         function continueAsGuest() {
             isGuest = true;
-            triggerAdRedirect();
             startApp();
         }
 
-        function triggerAdRedirect() {
-            window.open('https://www.highperformanceformat.com/example-ad-link', '_blank');
-        }
-
-        setInterval(() => {
-            if(document.getElementById('app-content').style.display === 'block') {
-                triggerAdRedirect();
-            }
-        }, 60000);
-
+        // 3. App Logic
         function startApp() {
             document.getElementById('gatekeeper').style.display = 'none';
             document.getElementById('app-content').style.display = 'block';
             if(isGuest) {
-                document.getElementById('private-msg').innerText = "PRIVATE ACCESS RESTRICTED (Sign in required)";
+                document.getElementById('private-msg').innerText = "RESTRICTED: Sign in to unlock.";
                 document.getElementById('private-controls').style.display = 'none';
             }
             build();
@@ -189,7 +176,7 @@
                 const con = document.getElementById('private-container');
                 con.style.display = 'block';
                 myPrivates.forEach(f => con.appendChild(createMedia(f, false)));
-            } else { alert("Incorrect Access Code."); }
+            } else { alert("Incorrect Code"); }
         }
 
         function createMedia(file, isFeat) {
@@ -197,18 +184,26 @@
             el.controls = true;
             el.className = isFeat ? 'featured-item' : 'stack';
             el.src = RES_URL + file;
-            el.onerror = () => el.style.display = 'none';
+            el.poster = RES_URL + "nutchellxer.thumb";
             return el;
         }
 
         function build() {
-            const featCon = document.getElementById('featured-container');
-            myFeatured.forEach(f => featCon.appendChild(createMedia(f, true)));
-            const mediaCon = document.getElementById('media-container');
-            myMedia.forEach(f => mediaCon.appendChild(createMedia(f, false)));
+            const populate = (list, id, feat) => {
+                const con = document.getElementById(id);
+                if(list.length > 0) {
+                    con.innerHTML = "";
+                    list.forEach(f => con.appendChild(createMedia(f, feat)));
+                }
+            };
+            populate(myFeatured, 'featured-container', true);
+            populate(myMedia, 'media-container', false);
+            
+            const arch = document.getElementById('video-container');
+            myArchive.forEach(f => arch.appendChild(createMedia(f, false)));
         }
 
-        // DRAG LOGIC
+        // Footer Drag
         const box = document.getElementById("drag-footer");
         let active = false, xOff = 0, yOff = 0, startX, startY;
         box.addEventListener("touchstart", (e) => {
@@ -227,3 +222,4 @@
     </script>
 </body>
 </html>
+ 
