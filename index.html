@@ -24,26 +24,30 @@
             background-repeat: no-repeat;
             color: white;
             font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow-x: hidden;
         }
 
-        /* Splash Screen with Fade Out Support */
+        /* FIXED SPLASH: Added transition for smooth exit */
         #splash {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: black; display: flex; justify-content: center;
             align-items: center; z-index: 9999;
-            transition: opacity 0.8s ease, visibility 0.8s;
+            opacity: 1;
+            transition: opacity 0.8s ease;
         }
+        #splash video { width: 100%; height: 100%; object-fit: cover; }
 
         #app-content { 
             display: none; padding: 20px; min-height: 100vh; 
-            /* Lightened opacity (0.4) to show nutchellxer.bg */
+            /* Lightened background to show nutchellxer.bg */
             background: radial-gradient(circle at top, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%);
             padding-bottom: 220px;
+            text-align: center;
         }
 
         .section-container {
             padding: 2px; border-radius: 20px; margin: 30px auto; max-width: 550px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         #featured-section { background: var(--gold); color: #000; }
         #media-section { background: var(--orange); color: #000; }
@@ -118,9 +122,9 @@
     </div>
 
     <script>
-        const myArchive = ["yoshi.detche", "amongus.detche", "car.detche", "1st.detche", "meowsol-edit.detche"];
-        const myFeatured = ["moza.detche", "supreme-editz.detche", "mydog.detche"]; 
-        const myMedia = ["amongus-bugreport-1"];    
+        const myArchive = ["yoshi.detche", "amongus.detche", "car.detche", "1st.detche"];
+        const myFeatured = ["moza.detche"]; 
+        const myMedia = [];    
         const myPrivates = []; 
 
         const RES_URL = "https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/";
@@ -144,12 +148,14 @@
         }
 
         function startApp() {
-            // Smoothly hide splash
             const splash = document.getElementById('splash');
+            const content = document.getElementById('app-content');
+
+            // Fade out splash
             splash.style.opacity = '0';
             
             // Show content
-            document.getElementById('app-content').style.display = 'block';
+            content.style.display = 'block';
             
             populate(myFeatured, 'featured-container', true);
             populate(myMedia, 'media-container', false);
@@ -158,12 +164,15 @@
             const archive = document.getElementById('video-container');
             myArchive.forEach(f => archive.appendChild(createMedia(f, false)));
 
-            // Remove splash from DOM after fade
-            setTimeout(() => { splash.style.visibility = 'hidden'; }, 800);
+            // Remove splash from DOM after animation
+            setTimeout(() => {
+                splash.style.display = 'none';
+            }, 800);
         }
 
-        // Trigger app start after 3 seconds
+        // Set to 3000ms (3 seconds)
         setTimeout(startApp, 3000);
     </script>
 </body>
 </html>
+ 
