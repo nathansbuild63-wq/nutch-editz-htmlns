@@ -7,6 +7,8 @@
     <style id="main-styles">
         :root {
             --gold: linear-gradient(135deg, #ff9d00, #ffdb00);
+            --orange: linear-gradient(135deg, #ff5f00, #ff9d00);
+            --violet: linear-gradient(135deg, #8a2be2, #4b0082);
             --blue: #0062ff;
             --glass: rgba(255, 255, 255, 0.08);
             --blur: blur(15px);
@@ -22,39 +24,33 @@
             background-repeat: no-repeat;
             color: white;
             font-family: 'Segoe UI', system-ui, sans-serif;
-            overflow-x: hidden; text-align: center;
         }
 
+        /* Splash Screen with Fade Out Support */
         #splash {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: black; display: flex; justify-content: center;
-            align-items: center; z-index: 9999; opacity: 1;
-            transition: opacity 0.6s ease; pointer-events: none;
-        }
-        #splash video, #splash img { 
-            width: 100%; height: 100%; object-fit: cover; 
-            position: absolute; top: 0; left: 0;
+            align-items: center; z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s;
         }
 
         #app-content { 
             display: none; padding: 20px; min-height: 100vh; 
-            background: radial-gradient(circle at top, rgba(21,21,21,0.85) 0%, rgba(0,0,0,0.95) 100%);
+            /* Lightened opacity (0.4) to show nutchellxer.bg */
+            background: radial-gradient(circle at top, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%);
             padding-bottom: 220px;
         }
 
-        .app-logo { 
-            width: 90px; height: 90px; border-radius: 22px; 
-            box-shadow: 0 0 25px rgba(0, 98, 255, 0.3);
-            margin-bottom: 15px; border: 2px solid var(--blue);
+        .section-container {
+            padding: 2px; border-radius: 20px; margin: 30px auto; max-width: 550px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
+        #featured-section { background: var(--gold); color: #000; }
+        #media-section { background: var(--orange); color: #000; }
+        #private-section { background: var(--violet); color: #fff; }
 
-        #featured-section {
-            background: var(--gold);
-            color: #000; padding: 2px; border-radius: 20px;
-            margin: 30px auto; max-width: 550px;
-        }
-        .featured-inner {
-            background: rgba(255, 255, 255, 0.15);
+        .inner {
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(12px);
             padding: 20px; border-radius: 18px;
         }
@@ -65,8 +61,6 @@
             background: var(--glass); backdrop-filter: var(--blur);
             display: block;
         }
-        
-        err { color: #ff4444; font-size: 11px; font-weight: bold; display: block; margin-top: -10px; margin-bottom: 10px;}
 
         #drag-footer {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
@@ -74,117 +68,102 @@
             backdrop-filter: blur(25px); border: 1px solid rgba(0, 98, 255, 0.4);
             border-radius: 24px; z-index: 9998;
         }
-        .drag-handle { padding: 12px; cursor: move; font-size: 10px; color: var(--blue); }
         .footer-btn {
             display: inline-block; padding: 12px 18px; margin: 6px;
             background: var(--blue); color: white; text-decoration: none;
-            border-radius: 12px; font-weight: bold; font-size: 13px; border: none;
-            cursor: pointer;
+            border-radius: 12px; font-weight: bold; font-size: 13px;
         }
-        /* Style for the new Resource button */
-        .res-btn {
-            background: var(--gold);
-            color: #000;
-        }
+        .res-btn { background: var(--gold); color: #000; }
     </style>
 </head>
 <body>
 
     <div id="splash">
-        <img src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/nutchellxer.splash" onerror="this.style.display='none'">
-        <video id="splashVideo" src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/nutchellxer.splash" autoplay muted playsinline></video>
+        <video src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/nutchellxer.splash" autoplay muted playsinline></video>
     </div>
 
     <div id="app-content">
-        <div id="header">
-            <img src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/ic_launcher.png" class="app-logo">
-            <h1>Hello, this is where I stacked my codes.<br><small style="opacity:0.5">Scroll for more</small></h1>
+        <h1>Nutchellxer Editz</h1>
+
+        <div id="featured-section" class="section-container">
+            <div class="inner">
+                <b>⭐ FEATURED</b>
+                <div id="featured-container">No featured content yet</div>
+            </div>
         </div>
 
-        <div id="featured-section">
-            <div class="featured-inner">
-                <span style="font-weight: 800;">⭐ FEATURED</span>
-                <hr style="border:none; height:1px; background:rgba(0,0,0,0.1); margin:10px 0;">
-                <div id="featured-container">There is no featured yet</div>
+        <div id="media-section" class="section-container">
+            <div class="inner">
+                <b>🎬 MEDIA</b>
+                <div id="media-container">No media yet</div>
+            </div>
+        </div>
+
+        <div id="private-section" class="section-container">
+            <div class="inner">
+                <b>🔒 PRIVATE</b>
+                <div id="private-container">No private content yet</div>
             </div>
         </div>
 
         <div id="video-container"></div>
 
         <div id="drag-footer">
-            <div class="drag-handle" id="drag-handle">•••• DRAG TO POSITION ••••</div>
-            <div class="footer-content">
+            <div class="footer-content" style="padding: 10px;">
                 <a href="https://vm.tiktok.com/ZS9J2r4GP6EU2-MRcbj/" class="footer-btn">TikTok</a>
                 <a href="mailto:nutchellexer@gmail.com" class="footer-btn">Mail Me</a>
-                <a href="https://github.com/nathansbuild63-wq/nutch-editz-res" target="_blank" class="footer-btn res-btn">View Resources</a>
+                <a href="https://github.com/nathansbuild63-wq/nutch-editz-res" class="footer-btn res-btn">Resources</a>
             </div>
         </div>
     </div>
 
-    <script id="dynamic-logic">
-        const myArchive = ["yoshi.detche", "amongus.detche", "car.detche", "1st.detche"];
-        const myFeatured = ["moza.detche", "meowsol-edit.detche", "mydog.detche"]; 
+    <script>
+        const myArchive = ["yoshi.detche", "amongus.detche", "car.detche", "1st.detche", "meowsol-edit.detche"];
+        const myFeatured = ["moza.detche", "supreme-editz.detche", "mydog.detche"]; 
+        const myMedia = ["amongus-bugreport-1"];    
+        const myPrivates = []; 
+
         const RES_URL = "https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/";
 
         function createMedia(file, isFeat) {
-            const isImg = file.toLowerCase().match(/\.(png|jpg|jpeg|webp)$/) || file.includes('thumb');
-            const el = document.createElement(isImg ? 'img' : 'video');
+            const el = document.createElement('video');
             el.className = isFeat ? 'featured-item' : 'stack';
             el.src = RES_URL + file;
-            if(!isImg) { 
-                el.controls = true; 
-                el.poster = isFeat ? RES_URL + "golden.thumb" : RES_URL + "nutchellxer.thumb"; 
-                el.onplay = () => {
-                    document.querySelectorAll('video').forEach(v => { if (v !== el) v.pause(); });
-                };
-            }
-            el.onerror = () => { 
-                el.style.display='none'; 
-                el.insertAdjacentHTML('afterend', `<err>Missing: ${file}</err>`); 
-            };
+            el.controls = true;
+            el.playsInline = true;
+            el.onerror = () => { el.style.display='none'; };
             return el;
         }
 
-        function build() {
-            const feat = document.getElementById('featured-container');
-            if(myFeatured.length > 0) {
-                feat.innerHTML = "";
-                myFeatured.forEach(f => feat.appendChild(createMedia(f, true)));
+        function populate(list, containerId, isFeat) {
+            const container = document.getElementById(containerId);
+            if(list.length > 0) {
+                container.innerHTML = "";
+                list.forEach(f => container.appendChild(createMedia(f, isFeat)));
             }
-            const container = document.getElementById('video-container');
-            container.innerHTML = "";
-            myArchive.forEach(f => container.appendChild(createMedia(f, false)));
         }
 
         function startApp() {
-            if (window.appStarted) return;
-            window.appStarted = true;
-            document.getElementById('splash').style.display = 'none';
+            // Smoothly hide splash
+            const splash = document.getElementById('splash');
+            splash.style.opacity = '0';
+            
+            // Show content
             document.getElementById('app-content').style.display = 'block';
-            build();
+            
+            populate(myFeatured, 'featured-container', true);
+            populate(myMedia, 'media-container', false);
+            populate(myPrivates, 'private-container', false);
+
+            const archive = document.getElementById('video-container');
+            myArchive.forEach(f => archive.appendChild(createMedia(f, false)));
+
+            // Remove splash from DOM after fade
+            setTimeout(() => { splash.style.visibility = 'hidden'; }, 800);
         }
 
-        const box = document.getElementById("drag-footer");
-        const handle = document.getElementById("drag-handle");
-        let active = false, initialX, initialY, xOffset = 0, yOffset = 0;
-
-        handle.addEventListener("touchstart", (e) => {
-            initialX = e.touches[0].clientX - xOffset;
-            initialY = e.touches[0].clientY - yOffset;
-            active = true;
-        });
-        window.addEventListener("touchmove", (e) => {
-            if (active) {
-                const currentX = e.touches[0].clientX - initialX;
-                const currentY = e.touches[0].clientY - initialY;
-                xOffset = currentX; yOffset = currentY;
-                box.style.transform = `translate(${currentX}px, ${currentY}px) translateX(-50%)`;
-            }
-        });
-        window.addEventListener("touchend", () => active = false);
-
-        setTimeout(startApp, 2500); 
+        // Trigger app start after 3 seconds
+        setTimeout(startApp, 3000);
     </script>
 </body>
 </html>
- 
