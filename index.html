@@ -29,55 +29,80 @@
         /* PROFILE UI (EXPANDABLE) */
         #user-profile {
             position: fixed; top: 15px; right: 15px; z-index: 100000;
-            display: flex; flex-direction: column; align-items: flex-end;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: none; flex-direction: column; align-items: flex-end;
         }
         .profile-pill {
-            display: flex; align-items: center; background: rgba(0,0,0,0.7);
+            display: flex; align-items: center; background: rgba(0,0,0,0.6);
             padding: 6px 14px; border-radius: 50px; backdrop-filter: blur(10px);
             border: 1px solid rgba(0, 98, 255, 0.3); cursor: pointer;
         }
         #user-avatar { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--blue); margin-right: 10px; }
         #user-name { font-size: 13px; font-weight: bold; color: white; }
         #logout-menu { 
-            display: none; background: rgba(20, 20, 20, 0.95); margin-top: 10px;
-            padding: 10px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1);
-            width: 100px; text-align: center; font-size: 12px; font-weight: bold; color: #ff4444; cursor: pointer;
+            display: none; background: rgba(0,0,0,0.8); margin-top: 8px;
+            padding: 10px 20px; border-radius: 15px; border: 1px solid rgba(255,0,0,0.3);
+            color: #ff4d4d; font-size: 12px; font-weight: bold; cursor: pointer;
+            backdrop-filter: blur(10px);
         }
 
         /* COOKIE POPUP */
         #cookie-popup {
             position: fixed; bottom: -200px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 400px; background: white; color: black;
-            padding: 20px; border-radius: 25px; z-index: 100002; transition: 0.5s;
+            width: 85%; max-width: 400px; background: white; color: black;
+            padding: 20px; border-radius: 25px; z-index: 100002; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 -10px 40px rgba(0,0,0,0.5); text-align: left;
         }
         #cookie-popup.show { bottom: 20px; }
 
         /* GAMES UI */
+        #games-section { background: var(--blue); color: white; }
         .game-card { 
-            background: #111; color: white; padding: 15px; margin: 10px; 
-            border-radius: 15px; border: 1px solid var(--blue); cursor: pointer;
-            display: inline-block; width: 120px; font-size: 12px;
+            background: rgba(0,0,0,0.3); color: white; padding: 15px; margin: 10px; 
+            border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); cursor: pointer;
+            display: inline-block; width: 110px; font-size: 12px; transition: 0.2s;
         }
+        .game-card:active { transform: scale(0.95); }
         #game-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: #000; z-index: 100005; display: none; flex-direction: column;
         }
-        #game-frame { width: 100%; height: calc(100% - 50px); border: none; }
+        #game-frame { width: 100%; height: calc(100% - 60px); border: none; }
 
         /* SPLASH & GATEKEEPER */
-        #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 99999; display: flex; justify-content: center; align-items: center; }
+        #splash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 99999; overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+        }
         #splash img, #splash video { width: 100%; height: 100%; object-fit: cover; position: absolute; }
-        #gatekeeper { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.9); backdrop-filter: blur(25px); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 99998; }
-        .auth-card { background: rgba(255, 255, 255, 0.95); padding: 35px; border-radius: 35px; color: black; width: 85%; max-width: 400px; }
+
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #gatekeeper { 
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(25px); 
+            display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 99998; 
+        }
+        .auth-card { 
+            background: rgba(255, 255, 255, 0.95); padding: 35px; border-radius: 35px; 
+            color: black; width: 85%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            animation: slideUpFade 0.6s ease-out;
+        }
         
-        #app-content { display: none; padding: 20px; padding-bottom: 220px; }
+        .guest-btn { margin-top: 15px; background: #f0f0f0; color: #444; padding: 12px; border-radius: 12px; border: none; width: 100%; cursor: pointer; font-weight: bold; }
+        .github-btn { margin-top: 10px; background: #24292e; color: white; padding: 12px; border-radius: 12px; border: none; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        
+        #app-content { display: none; padding: 20px; min-height: 100vh; background: radial-gradient(circle at top, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%); padding-bottom: 220px; }
         .section-container { color: #000; padding: 2px; border-radius: 20px; margin: 30px auto; max-width: 550px; }
         #featured-section { background: var(--gold); }
-        #games-section { background: var(--blue); color: white; }
+        #media-section { background: var(--orange); }
+        #private-section { background: var(--violet); color: #fff; }
         .inner-content { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); padding: 20px; border-radius: 18px; }
-        .stack { width: 100%; max-width: 500px; margin: 25px auto; border-radius: 15px; display: block; }
+        .stack, .featured-item { width: 100%; max-width: 500px; margin: 25px auto; border-radius: 15px; background: var(--glass); backdrop-filter: var(--blur); display: block; }
+        
         #drag-footer { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 420px; background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(0, 98, 255, 0.4); border-radius: 24px; z-index: 9998; }
         .footer-btn { display: inline-block; padding: 12px 18px; margin: 6px; background: var(--blue); color: white; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 13px; }
         .hidden { display: none !important; }
@@ -86,15 +111,15 @@
 <body>
 
     <div id="cookie-popup">
-        <h3 style="margin-top:0">🍪 Cookie Sync</h3>
-        <p style="font-size:12px">We use cookies to maintain your Ultra Sync identity and theory data.</p>
-        <button class="guest-btn" style="background:var(--blue); color:white" onclick="acceptCookies()">Accept All</button>
+        <h3 style="margin:0 0 10px 0;">Cookies & Theory</h3>
+        <p style="font-size:12px; line-height:1.5;">We use cookies to ensure your sync state doesn't collapse. By entering, you accept our local storage usage.</p>
+        <button class="guest-btn" style="background:var(--blue); color:white;" onclick="acceptCookies()">Allow Cookies</button>
     </div>
 
     <div id="game-overlay">
-        <div style="height:50px; display:flex; align-items:center; padding:0 20px;">
-            <b id="active-game-title">Game Loading...</b>
-            <button onclick="closeGame()" style="margin-left:auto; background:red; color:white; border:none; padding:5px 15px; border-radius:10px;">EXIT</button>
+        <div style="height:60px; display:flex; align-items:center; padding:0 20px; background:#111;">
+            <span id="active-game-name" style="font-weight:bold; color:var(--blue);">Game Name</span>
+            <button onclick="closeGame()" style="margin-left:auto; background:#ff4d4d; color:white; border:none; padding:8px 15px; border-radius:10px; font-weight:bold;">CLOSE</button>
         </div>
         <iframe id="game-frame"></iframe>
     </div>
@@ -104,7 +129,7 @@
             <img id="user-avatar" src="">
             <span id="user-name">Syncing...</span>
         </div>
-        <div id="logout-menu" onclick="location.reload()">LOGOUT</div>
+        <div id="logout-menu" onclick="location.reload()">Logout Session</div>
     </div>
 
     <div id="splash">
@@ -127,8 +152,8 @@
 
     <div id="app-content">
         <div id="header">
-            <img src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/ic_launcher.png" style="width: 80px; border-radius: 20px;">
-            <h1>Nutchellxer</h1>
+            <img src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/ic_launcher.png" style="width: 90px; height: 90px; border-radius: 22px; border: 2px solid var(--blue);">
+            <h1>Nutchellxer Editz</h1>
         </div>
 
         <div id="games-section" class="section-container">
@@ -139,10 +164,23 @@
         </div>
 
         <div id="featured-section" class="section-container"><div class="inner-content"><b>⭐ FEATURED</b><div id="featured-container"></div></div></div>
+        <div id="media-section" class="section-container"><div class="inner-content"><b>🎬 MEDIA</b><div id="media-container"></div></div></div>
+        <div id="private-section" class="section-container">
+            <div class="inner-content">
+                <b>🔒 PRIVATE</b>
+                <div id="private-auth-ui">
+                    <p id="private-msg">Archive Locked</p>
+                    <div id="private-controls">
+                        <input type="password" id="privatePass" class="pass-input" placeholder="Access Code" style="color:#000; background:#fff; padding:10px; border-radius:8px; border:1px solid #ccc;">
+                        <button class="pass-btn" onclick="checkPrivatePass()">Unlock</button>
+                    </div>
+                </div>
+                <div id="private-container" style="display: none;"></div>
+            </div>
+        </div>
         <div id="video-container"></div>
-
         <div id="drag-footer">
-            <div class="drag-handle" style="padding:10px; font-size:10px;">•••• DRAG ••••</div>
+            <div class="drag-handle" style="padding:10px; cursor:move; color:var(--blue); font-size:10px;">•••• DRAG ••••</div>
             <a href="https://vm.tiktok.com/ZS9J2r4GP6EU2-MRcbj/" class="footer-btn">TikTok</a>
             <a href="mailto:nutchellexer@gmail.com" class="footer-btn">Mail Me</a>
         </div>
@@ -150,20 +188,23 @@
 
     <script>
         const RES_URL = "https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/";
+        const SECURE_KEY = "OTEyNjQ4"; 
         const GITHUB_CLIENT_ID = "Ov23liA7Zyd7Euym0lYi"; 
-        
-        // THEORY: Games list collapse into 2.5 interaction
+        let currentVideo = null;
+
+        // Games Config
         const Mygames = [
-            "Dino=https://nathansbuild63-wq.github.io/nutch-editz-htmlns", // Example self-link
             "2048=https://play2048.co/",
+            "Dino=https://chromedino.com/",
             "Snake=https://www.google.com/logos/2010/pacman10-i.html"
         ];
 
         window.onload = () => {
-            if(!localStorage.getItem('cookiesAccepted')) {
-                document.getElementById('cookie-popup').classList.add('show');
+            // Show Cookie Popup if not accepted
+            if (!localStorage.getItem('nutch_cookies')) {
+                setTimeout(() => document.getElementById('cookie-popup').classList.add('show'), 2000);
             }
-            
+
             const params = new URLSearchParams(window.location.search);
             if (params.has('code')) {
                 document.getElementById('splash').classList.add('hidden');
@@ -178,7 +219,7 @@
         };
 
         function acceptCookies() {
-            localStorage.setItem('cookiesAccepted', 'true');
+            localStorage.setItem('nutch_cookies', 'true');
             document.getElementById('cookie-popup').classList.remove('show');
         }
 
@@ -212,21 +253,19 @@
         }
 
         function buildGames() {
-            const con = document.getElementById('games-container');
-            Mygames.forEach(g => {
-                const [name, url] = g.split('=');
-                const btn = document.createElement('div');
-                btn.className = 'game-card';
-                btn.innerText = name;
-                btn.onclick = () => openGame(name, url);
-                con.appendChild(btn);
+            const container = document.getElementById('games-container');
+            Mygames.forEach(gameStr => {
+                const [name, url] = gameStr.split('=');
+                const card = document.createElement('div');
+                card.className = 'game-card';
+                card.innerText = name;
+                card.onclick = () => {
+                    document.getElementById('active-game-name').innerText = name;
+                    document.getElementById('game-frame').src = url;
+                    document.getElementById('game-overlay').style.display = 'flex';
+                };
+                container.appendChild(card);
             });
-        }
-
-        function openGame(name, url) {
-            document.getElementById('active-game-title').innerText = name;
-            document.getElementById('game-frame').src = url;
-            document.getElementById('game-overlay').style.display = 'flex';
         }
 
         function closeGame() {
@@ -234,16 +273,44 @@
             document.getElementById('game-frame').src = "";
         }
 
-        const myArchive = ["yoshi.detche", "amongus.detche", "car.detche", "1st.detche"];
+        const myArchive = ["yoshi.detche", "amongus.detche", "car.detche", "1st.detche", "meowsol-edit.detche"];
+        const myFeatured = ["moza.detche", "test-edit.detche", "mydog.detche"]; 
+        const myMedia = ["amongus-bugreport-1.detche"];    
+
+        function handleVideoPlay(e) {
+            if (currentVideo && currentVideo !== e.target) currentVideo.pause();
+            currentVideo = e.target;
+        }
+
+        function createMedia(file, isFeat) {
+            let el = document.createElement('video');
+            el.controls = true;
+            el.className = isFeat ? 'featured-item' : 'stack';
+            el.src = RES_URL + file;
+            el.poster = RES_URL + "nutchellxer.thumb";
+            el.addEventListener('play', handleVideoPlay);
+            return el;
+        }
+
         function build() {
+            const populate = (list, id, feat) => {
+                const con = document.getElementById(id);
+                con.innerHTML = "";
+                list.forEach(f => con.appendChild(createMedia(f, feat)));
+            };
+            populate(myFeatured, 'featured-container', true);
+            populate(myMedia, 'media-container', false);
             const arch = document.getElementById('video-container');
-            myArchive.forEach(f => {
-                let el = document.createElement('video');
-                el.controls = true; el.className = 'stack';
-                el.src = RES_URL + f;
-                el.poster = RES_URL + "nutchellxer.thumb";
-                arch.appendChild(el);
-            });
+            arch.innerHTML = "";
+            myArchive.forEach(f => arch.appendChild(createMedia(f, false)));
+        }
+
+        function checkPrivatePass() {
+            const input = document.getElementById('privatePass').value;
+            if(btoa(input) === SECURE_KEY) {
+                document.getElementById('private-auth-ui').style.display = 'none';
+                document.getElementById('private-container').style.display = 'block';
+            } else { alert("Access Denied"); }
         }
 
         // Footer Drag
