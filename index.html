@@ -18,7 +18,6 @@
 
         body {
             margin: 0; padding: 0; 
-            /* BACKGROUND FIX: Ensure it shows behind everything */
             background: #000 url('https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/nutchellxer.bg') no-repeat center center fixed;
             background-size: cover;
             color: white;
@@ -26,6 +25,7 @@
             overflow-x: hidden; text-align: center;
         }
 
+        /* --- SPLASH --- */
         #splash {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: #000; display: flex; justify-content: center;
@@ -38,7 +38,7 @@
 
         #app-content { 
             display: none; padding: 20px; min-height: 100vh; 
-            /* BG FIX: Changed radial-gradient to be more transparent (0.2 instead of 0.4) */
+            /* BG VISIBILITY FIX: Lighter overlay to show nutchellxer.bg */
             background: radial-gradient(circle at top, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.7) 100%);
             padding-bottom: 220px;
         }
@@ -55,6 +55,7 @@
         .cf-turnstile { display: inline-block; margin-bottom: 15px; }
 
         .stack, .featured-item { width: 100%; max-width: 500px; margin: 25px auto; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); background: var(--glass); backdrop-filter: var(--blur); display: block; }
+        audio.stack { height: 50px; width: 90%; }
         
         #drag-footer { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 420px; background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(25px); border: 1px solid rgba(0, 98, 255, 0.4); border-radius: 24px; z-index: 9998; }
         .drag-handle { padding: 12px; cursor: move; font-size: 10px; color: var(--blue); }
@@ -86,8 +87,8 @@
             <div class="inner-content">
                 <b>🔒 PRIVATE</b>
                 <div id="private-auth">
-                    <p style="font-size: 12px;">Verify you are human to access</p>
-                    <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-callback="unlockPrivate"></div>
+                    <p style="font-size: 12px; margin-bottom: 15px;">Security Check Required</p>
+                    <div class="cf-turnstile" data-sitekey="0x4AAAAAACbZbO-hqA8mdhlk" data-callback="unlockPrivate"></div>
                 </div>
                 <div id="private-container" style="display: none;"></div>
             </div>
@@ -107,15 +108,18 @@
         const myArchive = ["yoshi.detche", "amongus.detche", "car.detche", "1st.detche", "meowsol-edit.detche"];
         const myFeatured = ["moza.detche", "mydog.detche", "test-edit.detche"]; 
         const myMedia = ["amongus-bugreport-1.detche"];    
-        const myPrivates = ["private_leak.detche"]; // Add private files here
+        const myPrivates = ["private_leak.detche"]; 
 
         const RES_URL = "https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/";
 
+        // TRIGGERED ON SUCCESSFUL CLOUDFLARE CHALLENGE
         function unlockPrivate(token) {
             if(token) {
+                console.log("Human Verified. Unlocking...");
                 document.getElementById('private-auth').style.display = 'none';
                 const con = document.getElementById('private-container');
                 con.style.display = 'block';
+                // Only build private media AFTER verification
                 myPrivates.forEach(f => con.appendChild(createMedia(f, false)));
             }
         }
@@ -144,7 +148,7 @@
         function build() {
             const populate = (list, id, feat) => {
                 const con = document.getElementById(id);
-                if(id !== 'private-container') { // Don't build private yet
+                if(id !== 'private-container') {
                     con.innerHTML = list.length > 0 ? "" : "No content yet";
                     list.forEach(f => con.appendChild(createMedia(f, feat)));
                 }
@@ -181,3 +185,4 @@
     </script>
 </body>
 </html>
+ 
