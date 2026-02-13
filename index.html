@@ -26,44 +26,60 @@
             overflow-x: hidden; text-align: center;
         }
 
+        /* PROFILE BAR */
+        #user-profile {
+            position: fixed; top: 15px; right: 15px; z-index: 100000;
+            display: flex; align-items: center; background: rgba(0,0,0,0.5);
+            padding: 5px 12px; border-radius: 50px; backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1); display: none;
+        }
+        #user-avatar { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--blue); margin-right: 8px; }
+        #user-name { font-size: 12px; font-weight: bold; }
+
         /* OVERLAYS */
-        #splash, #gatekeeper {
+        #splash, #gatekeeper, #offline-ui {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: #000; display: flex; flex-direction: column; 
             justify-content: center; align-items: center; z-index: 99999;
         }
         #gatekeeper { background: rgba(0,0,0,0.95); backdrop-filter: blur(25px); display: none; }
+        #offline-ui { display: none; z-index: 100001; background: #000; }
         .hidden { display: none !important; }
-        #splash img, #splash video { position: absolute; width: 100%; height: 100%; object-fit: cover; }
 
-        /* APP CONTENT */
-        #app-content { 
-            display: none; padding: 20px; min-height: 100vh; 
-            background: radial-gradient(circle at top, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%);
-            padding-bottom: 220px;
+        /* GITHUB BTN */
+        .github-btn {
+            background: #24292e; color: white; border: none; padding: 10px 20px;
+            border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;
+            display: flex; align-items: center; justify-content: center; width: 100%;
         }
 
+        /* DINO GAME CANVAS */
+        #dino-canvas { background: #111; border-bottom: 2px solid var(--blue); border-radius: 10px; }
+
+        #app-content { display: none; padding: 20px; min-height: 100vh; padding-bottom: 220px; }
         .section-container { color: #000; padding: 2px; border-radius: 20px; margin: 30px auto; max-width: 550px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         #featured-section { background: var(--gold); }
         #media-section { background: var(--orange); }
         #private-section { background: var(--violet); color: #fff; }
-
         .inner-content { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); padding: 20px; border-radius: 18px; }
-
-        /* AUTH UI */
-        .auth-card { background: white; padding: 35px; border-radius: 30px; color: black; width: 85%; max-width: 420px; }
-        .guest-btn { margin-top: 15px; background: #eee; color: #555; padding: 10px; border-radius: 10px; border: none; width: 100%; cursor: pointer; }
-        
-        .pass-input { width: 80%; padding: 12px; border-radius: 10px; border: 1px solid #ccc; margin: 10px 0; text-align: center; background: rgba(255,255,255,0.2); color: white; }
-        #private-section .pass-input { color: white; border-color: rgba(255,255,255,0.3); }
-        .pass-btn { padding: 10px 25px; border-radius: 12px; border: none; background: #4b0082; color: #fff; font-weight: bold; cursor: pointer; }
-
         .stack, .featured-item { width: 100%; max-width: 500px; margin: 25px auto; border-radius: 15px; background: var(--glass); backdrop-filter: var(--blur); display: block; }
         #drag-footer { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 420px; background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(0, 98, 255, 0.4); border-radius: 24px; z-index: 9998; }
         .footer-btn { display: inline-block; padding: 12px 18px; margin: 6px; background: var(--blue); color: white; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 13px; }
     </style>
 </head>
 <body>
+
+    <div id="user-profile">
+        <img id="user-avatar" src="">
+        <span id="user-name">User</span>
+    </div>
+
+    <div id="offline-ui">
+        <h2 style="color:var(--blue)">OFFLINE MODE</h2>
+        <p>Collapse detected. Play Nutchellxer Dino to restore sync.</p>
+        <canvas id="dino-canvas" width="340" height="150"></canvas>
+        <p style="font-size: 10px; opacity: 0.5; margin-top: 10px;">TAP TO JUMP</p>
+    </div>
 
     <div id="splash">
         <img src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/nutchellxer.splash">
@@ -73,19 +89,18 @@
     <div id="gatekeeper">
         <div class="auth-card">
             <h2 style="margin-top:0; color:#0062ff;">Identity Verification</h2>
-            <p style="font-size:14px">Solve the challenge to enter Nutchellxer Editz.</p>
-            
             <div class="cf-turnstile" data-sitekey="0x4AAAAAACbZbO-hqA8mdhlk" data-callback="onCloudflareSuccess"></div>
             
             <div id="auth-options" style="display:none; margin-top:20px;">
-                <div id="g_id_onload"
-                     data-client_id="647540282944-usu3rkob8emv3i5rt3g4b9napi7qe7db.apps.googleusercontent.com"
-                     data-callback="handleGoogleSignIn">
-                </div>
+                <div id="g_id_onload" data-client_id="647540282944-usu3rkob8emv3i5rt3g4b9napi7qe7db.apps.googleusercontent.com" data-callback="handleGoogleSignIn"></div>
                 <div class="g_id_signin" data-type="standard"></div>
                 
+                <button class="github-btn" onclick="loginGithub()">
+                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" style="width:20px; margin-right:10px; filter:invert(1);"> Sign in with GitHub
+                </button>
+
                 <hr style="margin:20px 0; border:0; border-top:1px solid #ddd;">
-                <button class="guest-btn" onclick="continueAsGuest()">Continue as Guest (Limited)</button>
+                <button class="guest-btn" onclick="continueAsGuest()">Continue as Guest</button>
             </div>
         </div>
     </div>
@@ -95,15 +110,8 @@
             <img src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/ic_launcher.png" style="width: 90px; height: 90px; border-radius: 22px; border: 2px solid var(--blue);">
             <h1>Nutchellxer Editz</h1>
         </div>
-
-        <div id="featured-section" class="section-container">
-            <div class="inner-content"><b>⭐ FEATURED</b><div id="featured-container"></div></div>
-        </div>
-
-        <div id="media-section" class="section-container">
-            <div class="inner-content"><b>🎬 MEDIA</b><div id="media-container"></div></div>
-        </div>
-
+        <div id="featured-section" class="section-container"><div class="inner-content"><b>⭐ FEATURED</b><div id="featured-container"></div></div></div>
+        <div id="media-section" class="section-container"><div class="inner-content"><b>🎬 MEDIA</b><div id="media-container"></div></div></div>
         <div id="private-section" class="section-container">
             <div class="inner-content">
                 <b>🔒 PRIVATE</b>
@@ -117,9 +125,7 @@
                 <div id="private-container" style="display: none;"></div>
             </div>
         </div>
-
         <div id="video-container"></div>
-
         <div id="drag-footer">
             <div class="drag-handle" style="padding:10px; cursor:move; color:var(--blue); font-size:10px;">•••• DRAG ••••</div>
             <a href="https://vm.tiktok.com/ZS9J2r4GP6EU2-MRcbj/" class="footer-btn">TikTok</a>
@@ -137,33 +143,63 @@
         
         let isGuest = false;
 
-        // 1. Splash Timer
-        setTimeout(() => {
-            document.getElementById('splash').classList.add('hidden');
-            document.getElementById('gatekeeper').style.display = 'flex';
-        }, 3000);
-
-        // 2. Gatekeeper Logic
-        function onCloudflareSuccess(token) {
-            document.getElementById('auth-options').style.display = 'block';
-        }
+        // --- AUTH & PROFILE ---
+        function onCloudflareSuccess() { document.getElementById('auth-options').style.display = 'block'; }
 
         function handleGoogleSignIn(response) {
-            isGuest = false;
+            const data = JSON.parse(atob(response.credential.split('.')[1]));
+            document.getElementById('user-avatar').src = data.picture;
+            document.getElementById('user-name').innerText = data.given_name;
+            document.getElementById('user-profile').style.display = 'flex';
             startApp();
+        }
+
+        function loginGithub() {
+            window.location.href = `https://github.com/login/oauth/authorize?client_id=YOUR_GITHUB_CLIENT_ID&scope=user`;
         }
 
         function continueAsGuest() {
             isGuest = true;
+            document.getElementById('user-avatar').src = RES_URL + "ic_launcher.png";
+            document.getElementById('user-name').innerText = "Guest Mode";
+            document.getElementById('user-profile').style.display = 'flex';
             startApp();
         }
 
-        // 3. App Logic
+        // --- OFFLINE DINO GAME ---
+        window.addEventListener('offline', () => { document.getElementById('offline-ui').style.display = 'flex'; initDino(); });
+        window.addEventListener('online', () => { document.getElementById('offline-ui').style.display = 'none'; });
+
+        function initDino() {
+            const canvas = document.getElementById('dino-canvas');
+            const ctx = canvas.getContext('2d');
+            let dinoY = 130, jump = false, score = 0, obsX = 340;
+            function draw() {
+                ctx.clearRect(0,0,340,150);
+                // Dino (Theme Blue)
+                ctx.fillStyle = "#0062ff";
+                if(jump) dinoY -= 3; else if(dinoY < 130) dinoY += 3;
+                if(dinoY < 80) jump = false;
+                ctx.fillRect(20, dinoY, 20, 20);
+                // Obstacle (Gold)
+                ctx.fillStyle = "#ff9d00";
+                obsX -= 4; if(obsX < -20) { obsX = 340; score++; }
+                ctx.fillRect(obsX, 130, 20, 20);
+                // Collision
+                if(obsX < 40 && obsX > 0 && dinoY > 110) { score = 0; obsX = 340; }
+                requestAnimationFrame(draw);
+            }
+            canvas.onclick = () => { if(dinoY >= 130) jump = true; };
+            draw();
+        }
+
+        setTimeout(() => { document.getElementById('splash').classList.add('hidden'); document.getElementById('gatekeeper').style.display = 'flex'; }, 3000);
+
         function startApp() {
             document.getElementById('gatekeeper').style.display = 'none';
             document.getElementById('app-content').style.display = 'block';
             if(isGuest) {
-                document.getElementById('private-msg').innerText = "RESTRICTED: Sign in to unlock.";
+                document.getElementById('private-msg').innerText = "RESTRICTED: Sign in required.";
                 document.getElementById('private-controls').style.display = 'none';
             }
             build();
@@ -198,26 +234,14 @@
             };
             populate(myFeatured, 'featured-container', true);
             populate(myMedia, 'media-container', false);
-            
             const arch = document.getElementById('video-container');
             myArchive.forEach(f => arch.appendChild(createMedia(f, false)));
         }
 
-        // Footer Drag
         const box = document.getElementById("drag-footer");
         let active = false, xOff = 0, yOff = 0, startX, startY;
-        box.addEventListener("touchstart", (e) => {
-            startX = e.touches[0].clientX - xOff;
-            startY = e.touches[0].clientY - yOff;
-            active = true;
-        });
-        window.addEventListener("touchmove", (e) => {
-            if (active) {
-                xOff = e.touches[0].clientX - startX;
-                yOff = e.touches[0].clientY - startY;
-                box.style.transform = `translate(${xOff}px, ${yOff}px) translateX(-50%)`;
-            }
-        });
+        box.addEventListener("touchstart", (e) => { startX = e.touches[0].clientX - xOff; startY = e.touches[0].clientY - yOff; active = true; });
+        window.addEventListener("touchmove", (e) => { if (active) { xOff = e.touches[0].clientX - startX; yOff = e.touches[0].clientY - startY; box.style.transform = `translate(${xOff}px, ${yOff}px) translateX(-50%)`; } });
         window.addEventListener("touchend", () => active = false);
     </script>
 </body>
