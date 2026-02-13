@@ -66,7 +66,6 @@
         .game-card.text-btn { width: 110px; font-size: 12px; padding: 15px 5px; }
         .game-card.logo-btn { width: 80px; height: 80px; }
         .game-card.logo-btn img { width: 100%; height: 100%; object-fit: cover; }
-        .game-card:active { transform: scale(0.92); }
 
         #game-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -178,7 +177,6 @@
             </div>
         </div>
 
-        <div id="video-container"></div>
         <div id="drag-footer">
             <div class="drag-handle" style="padding:10px; cursor:move; color:var(--blue); font-size:10px;">•••• DRAG ••••</div>
             <a href="https://vm.tiktok.com/ZS9J2r4GP6EU2-MRcbj/" class="footer-btn">TikTok</a>
@@ -194,11 +192,15 @@
         let currentUser = { name: "Guest", email: null, isSudo: false };
         let currentVideo = null;
 
-        // "Name=URL=Logo" OR "Name=URL"
+        // Config: "Name=URL=Logo" OR "Name=URL"
         const Mygames = [
             "Ascend=https://nathansbuild63-wq.github.io/Ascend/=https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/ic_launcher.png",
             "Example Game=https://example.com"
         ];
+
+        const myArchive = ["yoshi.detche", "amongus.detche", "car.detche", "1st.detche", "meowsol-edit.detche"];
+        const myFeatured = ["moza.detche", "test-edit.detche", "mydog.detche"]; 
+        const myMedia = ["amongus-bugreport-1.detche"];    
 
         window.onload = () => {
             if (!localStorage.getItem('nutch_cookies')) {
@@ -281,15 +283,11 @@
 
         function closeGame() { document.getElementById('game-overlay').style.display = 'none'; document.getElementById('game-frame').src = ""; }
 
-        const myArchive = ["yoshi.detche", "amongus.detche", "car.detche", "1st.detche", "meowsol-edit.detche"];
-        const myFeatured = ["moza.detche", "test-edit.detche", "mydog.detche"]; 
-        const myMedia = ["amongus-bugreport-1.detche"];    
-
         function createMedia(file, isFeat) {
             let el = document.createElement('video');
             el.controls = true; 
-            el.preload = "auto"; // Zero loading lag
-            el.muted = true; // Essential for instant buffering
+            el.preload = "auto"; // Zero loading on videos
+            el.muted = true;
             el.className = isFeat ? 'featured-item' : 'stack';
             el.src = RES_URL + file; 
             el.poster = RES_URL + "nutchellxer.thumb";
@@ -301,15 +299,20 @@
         }
 
         function build() {
-            const populate = (list, id, feat) => {
-                const con = document.getElementById(id); con.innerHTML = "";
-                list.forEach(f => con.appendChild(createMedia(f, feat)));
-            };
-            populate(myFeatured, 'featured-container', true);
-            populate(myMedia, 'media-container', false);
-            const arch = document.getElementById('private-container'); // Restored to private
-            arch.innerHTML = "";
-            myArchive.forEach(f => arch.appendChild(createMedia(f, false)));
+            // Build Featured
+            const featCon = document.getElementById('featured-container');
+            featCon.innerHTML = "";
+            myFeatured.forEach(f => featCon.appendChild(createMedia(f, true)));
+
+            // Build Media
+            const mediaCon = document.getElementById('media-container');
+            mediaCon.innerHTML = "";
+            myMedia.forEach(f => mediaCon.appendChild(createMedia(f, false)));
+
+            // Build Private Archive
+            const archCon = document.getElementById('private-container');
+            archCon.innerHTML = "";
+            myArchive.forEach(f => archCon.appendChild(createMedia(f, false)));
         }
 
         function acceptCookies() { localStorage.setItem('nutch_cookies', 'true'); document.getElementById('cookie-popup').classList.remove('show'); }
