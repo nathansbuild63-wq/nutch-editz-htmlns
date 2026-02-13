@@ -26,42 +26,57 @@
             overflow-x: hidden; text-align: center;
         }
 
-        /* PROFILE BAR */
+        /* NEW: PROFILE UI (TOP RIGHT) */
         #user-profile {
             position: fixed; top: 15px; right: 15px; z-index: 100000;
-            display: flex; align-items: center; background: rgba(0,0,0,0.5);
-            padding: 5px 12px; border-radius: 50px; backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1); display: none;
+            display: flex; align-items: center; background: rgba(0,0,0,0.6);
+            padding: 6px 14px; border-radius: 50px; backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 98, 255, 0.3); display: none;
         }
-        #user-avatar { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--blue); margin-right: 8px; }
-        #user-name { font-size: 12px; font-weight: bold; }
+        #user-avatar { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--blue); margin-right: 10px; }
+        #user-name { font-size: 13px; font-weight: bold; color: white; }
+
+        /* NEW: OFFLINE DINO UI */
+        #offline-ui {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #000; display: none; flex-direction: column; 
+            justify-content: center; align-items: center; z-index: 100001;
+        }
+        #dino-canvas { background: #111; border: 2px solid var(--blue); border-radius: 15px; box-shadow: 0 0 20px var(--blue); }
 
         /* OVERLAYS */
-        #splash, #gatekeeper, #offline-ui {
+        #splash, #gatekeeper {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: #000; display: flex; flex-direction: column; 
             justify-content: center; align-items: center; z-index: 99999;
         }
         #gatekeeper { background: rgba(0,0,0,0.95); backdrop-filter: blur(25px); display: none; }
-        #offline-ui { display: none; z-index: 100001; background: #000; }
         .hidden { display: none !important; }
+        #splash img, #splash video { position: absolute; width: 100%; height: 100%; object-fit: cover; }
 
-        /* GITHUB BTN */
-        .github-btn {
-            background: #24292e; color: white; border: none; padding: 10px 20px;
-            border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;
-            display: flex; align-items: center; justify-content: center; width: 100%;
+        /* APP CONTENT */
+        #app-content { 
+            display: none; padding: 20px; min-height: 100vh; 
+            background: radial-gradient(circle at top, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%);
+            padding-bottom: 220px;
         }
 
-        /* DINO GAME CANVAS */
-        #dino-canvas { background: #111; border-bottom: 2px solid var(--blue); border-radius: 10px; }
-
-        #app-content { display: none; padding: 20px; min-height: 100vh; padding-bottom: 220px; }
         .section-container { color: #000; padding: 2px; border-radius: 20px; margin: 30px auto; max-width: 550px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         #featured-section { background: var(--gold); }
         #media-section { background: var(--orange); }
         #private-section { background: var(--violet); color: #fff; }
+
         .inner-content { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); padding: 20px; border-radius: 18px; }
+
+        /* AUTH UI */
+        .auth-card { background: white; padding: 35px; border-radius: 30px; color: black; width: 85%; max-width: 420px; }
+        .guest-btn { margin-top: 15px; background: #eee; color: #555; padding: 12px; border-radius: 10px; border: none; width: 100%; cursor: pointer; font-weight: bold; }
+        .github-btn { margin-top: 10px; background: #24292e; color: white; padding: 12px; border-radius: 10px; border: none; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        
+        .pass-input { width: 80%; padding: 12px; border-radius: 10px; border: 1px solid #ccc; margin: 10px 0; text-align: center; background: rgba(255,255,255,0.2); color: white; }
+        #private-section .pass-input { color: white; border-color: rgba(255,255,255,0.3); }
+        .pass-btn { padding: 10px 25px; border-radius: 12px; border: none; background: #4b0082; color: #fff; font-weight: bold; cursor: pointer; }
+
         .stack, .featured-item { width: 100%; max-width: 500px; margin: 25px auto; border-radius: 15px; background: var(--glass); backdrop-filter: var(--blur); display: block; }
         #drag-footer { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 420px; background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(0, 98, 255, 0.4); border-radius: 24px; z-index: 9998; }
         .footer-btn { display: inline-block; padding: 12px 18px; margin: 6px; background: var(--blue); color: white; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 13px; }
@@ -71,14 +86,14 @@
 
     <div id="user-profile">
         <img id="user-avatar" src="">
-        <span id="user-name">User</span>
+        <span id="user-name">Syncing...</span>
     </div>
 
     <div id="offline-ui">
-        <h2 style="color:var(--blue)">OFFLINE MODE</h2>
-        <p>Collapse detected. Play Nutchellxer Dino to restore sync.</p>
-        <canvas id="dino-canvas" width="340" height="150"></canvas>
-        <p style="font-size: 10px; opacity: 0.5; margin-top: 10px;">TAP TO JUMP</p>
+        <h2 style="color:var(--blue)">CONNECTION LOST</h2>
+        <p style="font-size:12px">Collapse detected. Restoring sync through Dino Play...</p>
+        <canvas id="dino-canvas" width="320" height="150"></canvas>
+        <button class="guest-btn" style="width:auto; padding:10px 30px;" onclick="location.reload()">RETRY SYNC</button>
     </div>
 
     <div id="splash">
@@ -96,11 +111,12 @@
                 <div class="g_id_signin" data-type="standard"></div>
                 
                 <button class="github-btn" onclick="loginGithub()">
-                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" style="width:20px; margin-right:10px; filter:invert(1);"> Sign in with GitHub
+                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" style="width:18px; filter:invert(1); margin-right:10px;">
+                    Sign in with GitHub
                 </button>
-
+                
                 <hr style="margin:20px 0; border:0; border-top:1px solid #ddd;">
-                <button class="guest-btn" onclick="continueAsGuest()">Continue as Guest</button>
+                <button class="guest-btn" onclick="continueAsGuest()">Continue as Guest (Limited)</button>
             </div>
         </div>
     </div>
@@ -134,95 +150,85 @@
     </div>
 
     <script>
-        const myArchive = ["yoshi.detche", "amongus.detche", "car.detche", "1st.detche", "meowsol-edit.detche"];
-        const myFeatured = ["moza.detche", "test-edit.detche", "mydog.detche"]; 
-        const myMedia = ["amongus-bugreport-1.detche"];    
-        const myPrivates = []; 
         const RES_URL = "https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/";
         const SECURE_KEY = "OTEyNjQ4"; 
-        
         let isGuest = false;
 
-        // --- AUTH & PROFILE ---
+        // 1. SPLASH & OFFLINE LOGIC
+        setTimeout(() => {
+            document.getElementById('splash').classList.add('hidden');
+            document.getElementById('gatekeeper').style.display = 'flex';
+        }, 3000);
+
+        window.addEventListener('offline', () => {
+            document.getElementById('offline-ui').style.display = 'flex';
+            startDino();
+        });
+        window.addEventListener('online', () => document.getElementById('offline-ui').style.display = 'none');
+
+        // 2. DINO GAME LOGIC (NUTCHELLXER THEMED)
+        function startDino() {
+            const canvas = document.getElementById('dino-canvas');
+            const ctx = canvas.getContext('2d');
+            let dinoY = 130, isJumping = false, obsX = 320, score = 0;
+            function gameLoop() {
+                ctx.clearRect(0,0,320,150);
+                ctx.fillStyle = "#0062ff"; // Dino Color
+                if(isJumping) dinoY -= 4; else if(dinoY < 130) dinoY += 4;
+                if(dinoY < 70) isJumping = false;
+                ctx.fillRect(30, dinoY, 20, 20);
+                ctx.fillStyle = "#ffdb00"; // Obstacle (Gold)
+                obsX -= 5; if(obsX < -20) { obsX = 320; score++; }
+                ctx.fillRect(obsX, 130, 20, 20);
+                if(obsX < 50 && obsX > 10 && dinoY > 110) { score = 0; obsX = 320; }
+                requestAnimationFrame(gameLoop);
+            }
+            canvas.onclick = () => { if(dinoY >= 130) isJumping = true; };
+            gameLoop();
+        }
+
+        // 3. AUTH & PROFILE LOGIC
         function onCloudflareSuccess() { document.getElementById('auth-options').style.display = 'block'; }
 
         function handleGoogleSignIn(response) {
             const data = JSON.parse(atob(response.credential.split('.')[1]));
-            document.getElementById('user-avatar').src = data.picture;
-            document.getElementById('user-name').innerText = data.given_name;
-            document.getElementById('user-profile').style.display = 'flex';
+            updateProfile(data.given_name, data.picture);
             startApp();
         }
 
         function loginGithub() {
-            window.location.href = `https://github.com/login/oauth/authorize?client_id=YOUR_GITHUB_CLIENT_ID&scope=user`;
+            // This redirects to GitHub (Requires Client ID in your GitHub settings)
+            window.location.href = `https://github.com/login/oauth/authorize?client_id=YOUR_CLIENT_ID_HERE&scope=user`;
         }
 
         function continueAsGuest() {
             isGuest = true;
-            document.getElementById('user-avatar').src = RES_URL + "ic_launcher.png";
-            document.getElementById('user-name').innerText = "Guest Mode";
-            document.getElementById('user-profile').style.display = 'flex';
+            updateProfile("Guest User", RES_URL + "ic_launcher.png");
             startApp();
         }
 
-        // --- OFFLINE DINO GAME ---
-        window.addEventListener('offline', () => { document.getElementById('offline-ui').style.display = 'flex'; initDino(); });
-        window.addEventListener('online', () => { document.getElementById('offline-ui').style.display = 'none'; });
-
-        function initDino() {
-            const canvas = document.getElementById('dino-canvas');
-            const ctx = canvas.getContext('2d');
-            let dinoY = 130, jump = false, score = 0, obsX = 340;
-            function draw() {
-                ctx.clearRect(0,0,340,150);
-                // Dino (Theme Blue)
-                ctx.fillStyle = "#0062ff";
-                if(jump) dinoY -= 3; else if(dinoY < 130) dinoY += 3;
-                if(dinoY < 80) jump = false;
-                ctx.fillRect(20, dinoY, 20, 20);
-                // Obstacle (Gold)
-                ctx.fillStyle = "#ff9d00";
-                obsX -= 4; if(obsX < -20) { obsX = 340; score++; }
-                ctx.fillRect(obsX, 130, 20, 20);
-                // Collision
-                if(obsX < 40 && obsX > 0 && dinoY > 110) { score = 0; obsX = 340; }
-                requestAnimationFrame(draw);
-            }
-            canvas.onclick = () => { if(dinoY >= 130) jump = true; };
-            draw();
+        function updateProfile(name, img) {
+            document.getElementById('user-avatar').src = img;
+            document.getElementById('user-name').innerText = name;
+            document.getElementById('user-profile').style.display = 'flex';
         }
 
-        setTimeout(() => { document.getElementById('splash').classList.add('hidden'); document.getElementById('gatekeeper').style.display = 'flex'; }, 3000);
-
+        // 4. APP BUILD LOGIC
         function startApp() {
             document.getElementById('gatekeeper').style.display = 'none';
             document.getElementById('app-content').style.display = 'block';
             if(isGuest) {
-                document.getElementById('private-msg').innerText = "RESTRICTED: Sign in required.";
+                document.getElementById('private-msg').innerText = "RESTRICTED: Sign in to unlock.";
                 document.getElementById('private-controls').style.display = 'none';
             }
             build();
         }
 
-        function checkPrivatePass() {
-            const input = document.getElementById('privatePass').value;
-            if(btoa(input) === SECURE_KEY) {
-                document.getElementById('private-auth-ui').style.display = 'none';
-                const con = document.getElementById('private-container');
-                con.style.display = 'block';
-                myPrivates.forEach(f => con.appendChild(createMedia(f, false)));
-            } else { alert("Incorrect Code"); }
-        }
-
-        function createMedia(file, isFeat) {
-            let el = document.createElement('video');
-            el.controls = true;
-            el.className = isFeat ? 'featured-item' : 'stack';
-            el.src = RES_URL + file;
-            el.poster = RES_URL + "nutchellxer.thumb";
-            return el;
-        }
+        // (The rest of your build, checkPrivatePass, and createMedia functions remain the same as your previous code)
+        const myArchive = ["yoshi.detche", "amongus.detche", "car.detche", "1st.detche", "meowsol-edit.detche"];
+        const myFeatured = ["moza.detche", "test-edit.detche", "mydog.detche"]; 
+        const myMedia = ["amongus-bugreport-1.detche"];    
+        const myPrivates = []; 
 
         function build() {
             const populate = (list, id, feat) => {
@@ -238,6 +244,26 @@
             myArchive.forEach(f => arch.appendChild(createMedia(f, false)));
         }
 
+        function createMedia(file, isFeat) {
+            let el = document.createElement('video');
+            el.controls = true;
+            el.className = isFeat ? 'featured-item' : 'stack';
+            el.src = RES_URL + file;
+            el.poster = RES_URL + "nutchellxer.thumb";
+            return el;
+        }
+
+        function checkPrivatePass() {
+            const input = document.getElementById('privatePass').value;
+            if(btoa(input) === SECURE_KEY) {
+                document.getElementById('private-auth-ui').style.display = 'none';
+                const con = document.getElementById('private-container');
+                con.style.display = 'block';
+                myPrivates.forEach(f => con.appendChild(createMedia(f, false)));
+            } else { alert("Incorrect Code"); }
+        }
+
+        // Footer Drag Logic
         const box = document.getElementById("drag-footer");
         let active = false, xOff = 0, yOff = 0, startX, startY;
         box.addEventListener("touchstart", (e) => { startX = e.touches[0].clientX - xOff; startY = e.touches[0].clientY - yOff; active = true; });
@@ -246,4 +272,3 @@
     </script>
 </body>
 </html>
- 
