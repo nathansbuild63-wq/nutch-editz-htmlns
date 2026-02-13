@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -55,6 +55,15 @@
             margin-top: 10px; text-align: center; font-size: 16px; 
             background: rgba(255,255,255,0.2); color: #fff; outline: none;
         }
+        
+        /* Shake Animation for wrong pass */
+        .shake { animation: shake 0.4s; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
         .pass-btn { 
             margin-top: 15px; padding: 10px 25px; border-radius: 12px; 
             border: none; background: #fff; color: #4b0082; font-weight: bold; cursor: pointer;
@@ -124,7 +133,7 @@
 
         const RES_URL = "https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/";
         
-        
+        // Base64 for 912648
         const SECURE_KEY = "OTEyNjQ4"; 
 
         function showPassInput(token) {
@@ -136,13 +145,18 @@
         }
 
         function checkPass() {
-            const input = document.getElementById('privatePass').value;
-            // Encodes user input to Base64 and compares it to our SECURE_KEY
+            const inputEl = document.getElementById('privatePass');
+            const input = inputEl.value;
+            
+            // Convert user input to base64 and compare
             if(btoa(input) === SECURE_KEY) {
                 unlockPrivate();
             } else {
-                alert("Invalid Access Code.");
-                document.getElementById('privatePass').value = "";
+                // Feedback for wrong password
+                inputEl.classList.add('shake');
+                setTimeout(() => inputEl.classList.remove('shake'), 400);
+                inputEl.value = "";
+                inputEl.placeholder = "Incorrect Code";
             }
         }
 
