@@ -38,6 +38,7 @@
         }
         #user-avatar { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--blue); margin-right: 10px; }
         #user-name { font-size: 13px; font-weight: bold; color: white; }
+        #sudo-badge { display: none; background: #ff4d4d; color: white; font-size: 9px; padding: 2px 6px; border-radius: 4px; margin-left: 8px; font-weight: 900; }
         
         #logout-menu { 
             display: none; background: rgba(0,0,0,0.8); margin-top: 8px;
@@ -58,14 +59,14 @@
         /* GAMES UI */
         #games-section { background: var(--blue); color: white; }
         .game-card { 
-            background: rgba(0,0,0,0.3); color: white; padding: 10px; margin: 10px; 
+            background: rgba(0,0,0,0.3); color: white; margin: 10px; 
             border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); cursor: pointer;
-            display: inline-block; vertical-align: middle; transition: 0.2s;
-            overflow: hidden;
+            display: inline-block; vertical-align: middle; transition: 0.2s; overflow: hidden;
         }
-        .game-card.text-only { width: 110px; font-size: 12px; padding: 15px 10px; }
-        .game-card.with-logo { width: 80px; height: 80px; padding: 0; }
-        .game-card.with-logo img { width: 100%; height: 100%; object-fit: cover; }
+        .game-card.text-btn { width: 110px; font-size: 12px; padding: 15px 5px; }
+        .game-card.logo-btn { width: 80px; height: 80px; }
+        .game-card.logo-btn img { width: 100%; height: 100%; object-fit: cover; }
+        .game-card:active { transform: scale(0.92); }
 
         #game-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -127,6 +128,7 @@
         <div class="profile-pill" onclick="toggleLogout()">
             <img id="user-avatar" src="">
             <span id="user-name">Syncing...</span>
+            <span id="sudo-badge">SUDO</span>
         </div>
         <div id="logout-menu" onclick="location.reload()">Logout Session</div>
     </div>
@@ -167,13 +169,10 @@
         
         <div id="private-section" class="section-container">
             <div class="inner-content">
-                <b>🔒 PRIVATE ARCHIVE</b>
+                <b>🔒 PRIVATE (SUDO)</b>
                 <div id="private-auth-ui">
-                    <p id="private-msg">Sync Collapse Prevention Active</p>
-                    <div id="private-controls">
-                        <input type="password" id="privatePass" placeholder="Access Code" style="color:#000; background:#fff; padding:10px; border-radius:8px; border:1px solid #ccc; width:60%;">
-                        <button class="guest-btn" style="width:auto; display:inline-block; padding:10px 20px; margin-top:0;" onclick="checkPrivatePass()">Unlock</button>
-                    </div>
+                    <p id="private-msg">Archive Restricted</p>
+                    <button class="guest-btn" style="background:white; color:black; width:auto; padding:8px 25px;" onclick="verifySudo()">Verify SUDO Identity</button>
                 </div>
                 <div id="private-container" style="display: none;"></div>
             </div>
@@ -189,13 +188,15 @@
 
     <script>
         const RES_URL = "https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/";
-        const SECURE_KEY = "OTEyNjQ4"; 
+        const ADMIN_EMAIL = "nutchellexer@gmail.com"; 
         const GITHUB_CLIENT_ID = "Ov23liA7Zyd7Euym0lYi"; 
+        
+        let currentUser = { name: "Guest", email: null, isSudo: false };
         let currentVideo = null;
 
-        // Games Config: "Name=URL=LogoURL" or "Name=URL"
+        // "Name=URL=Logo" OR "Name=URL"
         const Mygames = [
-            "Ascend=https://nathansbuild63-wq.github.io/Ascend/=https://raw.githubusercontent.com/nathansbuild63-wq.github.io/Ascend/main/icon.png",
+            "Ascend=https://nathansbuild63-wq.github.io/Ascend/=https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/ic_launcher.png",
             "Example Game=https://example.com"
         ];
 
@@ -206,7 +207,7 @@
             const params = new URLSearchParams(window.location.search);
             if (params.has('code')) {
                 document.getElementById('splash').classList.add('hidden');
-                updateProfile("GitHub User", "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"); 
+                updateProfile("GitHub User", "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png", "nutchellexer@gmail.com"); 
                 startApp();
             } else {
                 setTimeout(() => {
@@ -217,19 +218,33 @@
         };
 
         function onCloudflareSuccess() { document.getElementById('auth-options').style.display = 'block'; }
+        
         function handleGoogleSignIn(response) {
             const data = JSON.parse(atob(response.credential.split('.')[1]));
-            updateProfile(data.given_name, data.picture);
+            updateProfile(data.given_name, data.picture, data.email);
             startApp();
         }
 
         function loginGithub() { window.location.href = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&scope=user`; }
-        function continueAsGuest() { updateProfile("Guest User", RES_URL + "ic_launcher.png"); startApp(); }
+        function continueAsGuest() { updateProfile("Guest User", RES_URL + "ic_launcher.png", null); startApp(); }
 
-        function updateProfile(name, img) {
+        function updateProfile(name, img, email) {
+            currentUser = { name, email, isSudo: (email === ADMIN_EMAIL) };
             document.getElementById('user-avatar').src = img;
             document.getElementById('user-name').innerText = name;
             document.getElementById('user-profile').style.display = 'flex';
+            if(currentUser.isSudo) document.getElementById('sudo-badge').style.display = 'inline-block';
+        }
+
+        function verifySudo() {
+            if (!currentUser.email) {
+                alert("SUDO ERROR: Unauthorized guest session.");
+            } else if (currentUser.isSudo) {
+                document.getElementById('private-auth-ui').style.display = 'none';
+                document.getElementById('private-container').style.display = 'block';
+            } else {
+                alert(`SUDO DENIED: ${currentUser.email} is not authorized.`);
+            }
         }
 
         function startApp() {
@@ -245,13 +260,13 @@
             Mygames.forEach(gameStr => {
                 const parts = gameStr.split('=');
                 const name = parts[0], url = parts[1], logo = parts[2];
-                
                 const card = document.createElement('div');
+                
                 if(logo) {
-                    card.className = 'game-card with-logo';
+                    card.className = 'game-card logo-btn';
                     card.innerHTML = `<img src="${logo}" alt="${name}">`;
                 } else {
-                    card.className = 'game-card text-only';
+                    card.className = 'game-card text-btn';
                     card.innerText = name;
                 }
 
@@ -273,8 +288,8 @@
         function createMedia(file, isFeat) {
             let el = document.createElement('video');
             el.controls = true; 
-            el.preload = "auto"; // Instant loading
-            el.muted = true; // Required for many browsers to auto-buffer
+            el.preload = "auto"; // Zero loading lag
+            el.muted = true; // Essential for instant buffering
             el.className = isFeat ? 'featured-item' : 'stack';
             el.src = RES_URL + file; 
             el.poster = RES_URL + "nutchellxer.thumb";
@@ -292,17 +307,9 @@
             };
             populate(myFeatured, 'featured-container', true);
             populate(myMedia, 'media-container', false);
-            const arch = document.getElementById('private-container');
+            const arch = document.getElementById('private-container'); // Restored to private
             arch.innerHTML = "";
             myArchive.forEach(f => arch.appendChild(createMedia(f, false)));
-        }
-
-        function checkPrivatePass() {
-            const input = document.getElementById('privatePass').value;
-            if(btoa(input) === SECURE_KEY) {
-                document.getElementById('private-auth-ui').style.display = 'none';
-                document.getElementById('private-container').style.display = 'block';
-            } else { alert("Access Denied"); }
         }
 
         function acceptCookies() { localStorage.setItem('nutch_cookies', 'true'); document.getElementById('cookie-popup').classList.remove('show'); }
