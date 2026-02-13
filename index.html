@@ -147,18 +147,29 @@
     <script>
         const RES_URL = "https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/";
         const SECURE_KEY = "OTEyNjQ4"; 
-        let currentVideo = null; // THE "ULTRA SYNC" WATCHDOG
+        const GITHUB_CLIENT_ID = "Ov23liA7Zyd7Euym0lYi"; // YOUR KEY
+        let currentVideo = null;
 
-        // 1. SPLASH LOGIC
-        setTimeout(() => {
-            document.getElementById('splash').classList.add('hidden');
-            document.getElementById('gatekeeper').style.display = 'flex';
-        }, 3000);
+        // 1. SPLASH LOGIC & GITHUB RETURN CHECK
+        window.onload = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('code')) {
+                // User just returned from GitHub!
+                document.getElementById('splash').classList.add('hidden');
+                updateProfile("GitHub User", "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png");
+                startApp();
+            } else {
+                setTimeout(() => {
+                    document.getElementById('splash').classList.add('hidden');
+                    document.getElementById('gatekeeper').style.display = 'flex';
+                }, 3000);
+            }
+        };
 
         // 2. VIDEO WATCHDOG (AUTO-PAUSE)
         function handleVideoPlay(event) {
             if (currentVideo && currentVideo !== event.target) {
-                currentVideo.pause(); // Collapse previous video
+                currentVideo.pause();
             }
             currentVideo = event.target;
         }
@@ -170,6 +181,10 @@
             const data = JSON.parse(atob(response.credential.split('.')[1]));
             updateProfile(data.given_name, data.picture);
             startApp();
+        }
+
+        function loginGithub() {
+            window.location.href = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&scope=user`;
         }
 
         function continueAsGuest() {
@@ -200,7 +215,7 @@
             el.className = isFeat ? 'featured-item' : 'stack';
             el.src = RES_URL + file;
             el.poster = RES_URL + "nutchellxer.thumb";
-            el.addEventListener('play', handleVideoPlay); // Add Watchdog
+            el.addEventListener('play', handleVideoPlay);
             return el;
         }
 
