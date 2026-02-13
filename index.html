@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nutchellxer Editz | Ultra Sync</title>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    
     <style id="main-styles">
         :root {
             --gold: linear-gradient(135deg, #ff9d00, #ffdb00);
@@ -16,6 +18,7 @@
 
         body {
             margin: 0; padding: 0; 
+            /* BACKGROUND FIX: Ensure it shows behind everything */
             background: #000 url('https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/nutchellxer.bg') no-repeat center center fixed;
             background-size: cover;
             color: white;
@@ -23,7 +26,6 @@
             overflow-x: hidden; text-align: center;
         }
 
-        /* --- HYBRID SPLASH --- */
         #splash {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: #000; display: flex; justify-content: center;
@@ -32,14 +34,12 @@
             transition: opacity 0.8s ease, visibility 0.8s;
         }
         #splash.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        
-        #splash img, #splash video { 
-            position: absolute; width: 100%; height: 100%; object-fit: cover; 
-        }
+        #splash img, #splash video { position: absolute; width: 100%; height: 100%; object-fit: cover; }
 
         #app-content { 
             display: none; padding: 20px; min-height: 100vh; 
-            background: radial-gradient(circle at top, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%);
+            /* BG FIX: Changed radial-gradient to be more transparent (0.2 instead of 0.4) */
+            background: radial-gradient(circle at top, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.7) 100%);
             padding-bottom: 220px;
         }
 
@@ -50,10 +50,12 @@
 
         .inner-content { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); padding: 20px; border-radius: 18px; }
         
-        /* Media Elements */
-        .stack, .featured-item { width: 100%; max-width: 500px; margin: 25px auto; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); background: var(--glass); backdrop-filter: var(--blur); display: block; }
-        audio.stack { height: 50px; width: 90%; }
+        /* Verification UI */
+        #private-auth { padding: 20px; }
+        .cf-turnstile { display: inline-block; margin-bottom: 15px; }
 
+        .stack, .featured-item { width: 100%; max-width: 500px; margin: 25px auto; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); background: var(--glass); backdrop-filter: var(--blur); display: block; }
+        
         #drag-footer { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 420px; background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(25px); border: 1px solid rgba(0, 98, 255, 0.4); border-radius: 24px; z-index: 9998; }
         .drag-handle { padding: 12px; cursor: move; font-size: 10px; color: var(--blue); }
         .footer-btn { display: inline-block; padding: 12px 18px; margin: 6px; background: var(--blue); color: white; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 13px; cursor: pointer; border: none; }
@@ -62,10 +64,8 @@
 <body>
 
     <div id="splash">
-        <img src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/nutchellxer.splash" alt="Splash Image">
-        <video id="splashVideo" autoplay playsinline>
-            <source src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/nutchellxer.splash" type="video/mp4">
-        </video>
+        <img src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/nutchellxer.splash">
+        <video id="splashVideo" autoplay playsinline><source src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/nutchellxer.splash" type="video/mp4"></video>
     </div>
 
     <div id="app-content">
@@ -83,7 +83,14 @@
         </div>
 
         <div id="private-section" class="section-container">
-            <div class="inner-content"><b>🔒 PRIVATE</b><div id="private-container"></div></div>
+            <div class="inner-content">
+                <b>🔒 PRIVATE</b>
+                <div id="private-auth">
+                    <p style="font-size: 12px;">Verify you are human to access</p>
+                    <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-callback="unlockPrivate"></div>
+                </div>
+                <div id="private-container" style="display: none;"></div>
+            </div>
         </div>
 
         <div id="video-container"></div>
@@ -100,33 +107,34 @@
         const myArchive = ["yoshi.detche", "amongus.detche", "car.detche", "1st.detche", "meowsol-edit.detche"];
         const myFeatured = ["moza.detche", "mydog.detche", "test-edit.detche"]; 
         const myMedia = ["amongus-bugreport-1.detche"];    
-        const myPrivates = []; 
+        const myPrivates = ["private_leak.detche"]; // Add private files here
 
         const RES_URL = "https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/";
+
+        function unlockPrivate(token) {
+            if(token) {
+                document.getElementById('private-auth').style.display = 'none';
+                const con = document.getElementById('private-container');
+                con.style.display = 'block';
+                myPrivates.forEach(f => con.appendChild(createMedia(f, false)));
+            }
+        }
 
         function createMedia(file, isFeat) {
             let el;
             const name = file.toLowerCase();
-            
-            // KEYWORD DETECTION: Checks if it's an Image, Audio, or Video
             const isImg = name.includes('img') || name.includes('pic') || name.includes('jpg') || name.includes('png');
             const isAudio = name.includes('audio') || name.includes('mp3') || name.includes('sound');
 
-            if (isImg) {
-                el = document.createElement('img');
-            } else if (isAudio) {
-                el = document.createElement('audio');
-                el.controls = true;
-            } else {
+            if (isImg) { el = document.createElement('img'); }
+            else if (isAudio) { el = document.createElement('audio'); el.controls = true; }
+            else {
                 el = document.createElement('video');
                 el.controls = true;
                 el.poster = RES_URL + "nutchellxer.thumb";
                 el.playsInline = true;
-                el.onplay = () => { 
-                    document.querySelectorAll('video, audio').forEach(m => { if (m !== el) m.pause(); }); 
-                };
+                el.onplay = () => { document.querySelectorAll('video, audio').forEach(m => { if (m !== el) m.pause(); }); };
             }
-
             el.className = isFeat ? 'featured-item' : 'stack';
             el.src = RES_URL + file;
             el.onerror = () => { el.style.display='none'; };
@@ -136,16 +144,14 @@
         function build() {
             const populate = (list, id, feat) => {
                 const con = document.getElementById(id);
-                con.innerHTML = list.length > 0 ? "" : "No content yet";
-                list.forEach(f => con.appendChild(createMedia(f, feat)));
+                if(id !== 'private-container') { // Don't build private yet
+                    con.innerHTML = list.length > 0 ? "" : "No content yet";
+                    list.forEach(f => con.appendChild(createMedia(f, feat)));
+                }
             };
             populate(myFeatured, 'featured-container', true);
             populate(myMedia, 'media-container', false);
-            populate(myPrivates, 'private-container', false);
-            
-            const arch = document.getElementById('video-container');
-            arch.innerHTML = "";
-            myArchive.forEach(f => arch.appendChild(createMedia(f, false)));
+            myArchive.forEach(f => document.getElementById('video-container').appendChild(createMedia(f, false)));
         }
 
         function startApp() {
@@ -154,11 +160,9 @@
             document.getElementById('splash').classList.add('hidden');
         }
 
-        // FOOTER DRAG LOGIC
         const box = document.getElementById("drag-footer");
         const handle = document.getElementById("drag-handle");
         let xOff = 0, yOff = 0, active = false, startX, startY;
-
         handle.addEventListener("touchstart", (e) => {
             startX = e.touches[0].clientX - xOff;
             startY = e.touches[0].clientY - yOff;
@@ -173,9 +177,7 @@
         });
         window.addEventListener("touchend", () => active = false);
 
-        // Forced Start after 3s
         setTimeout(startApp, 3000); 
     </script>
 </body>
 </html>
- 
