@@ -26,7 +26,7 @@
             overflow-x: hidden; text-align: center;
         }
 
-        /* NEW: PROFILE UI (TOP RIGHT) */
+        /* PROFILE UI */
         #user-profile {
             position: fixed; top: 15px; right: 15px; z-index: 100000;
             display: flex; align-items: center; background: rgba(0,0,0,0.6);
@@ -36,50 +36,46 @@
         #user-avatar { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--blue); margin-right: 10px; }
         #user-name { font-size: 13px; font-weight: bold; color: white; }
 
-        /* NEW: OFFLINE DINO UI */
-        #offline-ui {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #000; display: none; flex-direction: column; 
-            justify-content: center; align-items: center; z-index: 100001;
+        /* SPLASH (FIXED RESIZING) */
+        #splash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 99999; overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
         }
-        #dino-canvas { background: #111; border: 2px solid var(--blue); border-radius: 15px; box-shadow: 0 0 20px var(--blue); }
-
-        /* OVERLAYS */
-        #splash, #gatekeeper {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #000; display: flex; flex-direction: column; 
-            justify-content: center; align-items: center; z-index: 99999;
+        #splash img, #splash video { 
+            width: 100%; height: 100%; object-fit: cover; 
+            position: absolute;
         }
-        #gatekeeper { background: rgba(0,0,0,0.95); backdrop-filter: blur(25px); display: none; }
-        .hidden { display: none !important; }
-        #splash img, #splash video { position: absolute; width: 100%; height: 100%; object-fit: cover; }
 
+        /* GATEKEEPER / LOGIN */
+        #gatekeeper { 
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(25px); 
+            display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 99998; 
+        }
+        .auth-card { 
+            background: rgba(255, 255, 255, 0.95); padding: 35px; border-radius: 35px; 
+            color: black; width: 85%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        
+        .guest-btn { margin-top: 15px; background: #f0f0f0; color: #444; padding: 12px; border-radius: 12px; border: none; width: 100%; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .github-btn { margin-top: 10px; background: #24292e; color: white; padding: 12px; border-radius: 12px; border: none; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        
         /* APP CONTENT */
-        #app-content { 
-            display: none; padding: 20px; min-height: 100vh; 
-            background: radial-gradient(circle at top, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%);
-            padding-bottom: 220px;
-        }
-
-        .section-container { color: #000; padding: 2px; border-radius: 20px; margin: 30px auto; max-width: 550px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        #app-content { display: none; padding: 20px; min-height: 100vh; background: radial-gradient(circle at top, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%); padding-bottom: 220px; }
+        .section-container { color: #000; padding: 2px; border-radius: 20px; margin: 30px auto; max-width: 550px; }
         #featured-section { background: var(--gold); }
         #media-section { background: var(--orange); }
         #private-section { background: var(--violet); color: #fff; }
-
         .inner-content { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); padding: 20px; border-radius: 18px; }
-
-        /* AUTH UI */
-        .auth-card { background: white; padding: 35px; border-radius: 30px; color: black; width: 85%; max-width: 420px; }
-        .guest-btn { margin-top: 15px; background: #eee; color: #555; padding: 12px; border-radius: 10px; border: none; width: 100%; cursor: pointer; font-weight: bold; }
-        .github-btn { margin-top: 10px; background: #24292e; color: white; padding: 12px; border-radius: 10px; border: none; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-        
-        .pass-input { width: 80%; padding: 12px; border-radius: 10px; border: 1px solid #ccc; margin: 10px 0; text-align: center; background: rgba(255,255,255,0.2); color: white; }
-        #private-section .pass-input { color: white; border-color: rgba(255,255,255,0.3); }
-        .pass-btn { padding: 10px 25px; border-radius: 12px; border: none; background: #4b0082; color: #fff; font-weight: bold; cursor: pointer; }
-
         .stack, .featured-item { width: 100%; max-width: 500px; margin: 25px auto; border-radius: 15px; background: var(--glass); backdrop-filter: var(--blur); display: block; }
+        
+        /* DINO UI */
+        #offline-ui { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 100001; }
+        #dino-canvas { background: #111; border: 2px solid var(--blue); border-radius: 15px; }
         #drag-footer { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 420px; background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(0, 98, 255, 0.4); border-radius: 24px; z-index: 9998; }
         .footer-btn { display: inline-block; padding: 12px 18px; margin: 6px; background: var(--blue); color: white; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 13px; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -91,9 +87,8 @@
 
     <div id="offline-ui">
         <h2 style="color:var(--blue)">CONNECTION LOST</h2>
-        <p style="font-size:12px">Collapse detected. Restoring sync through Dino Play...</p>
         <canvas id="dino-canvas" width="320" height="150"></canvas>
-        <button class="guest-btn" style="width:auto; padding:10px 30px;" onclick="location.reload()">RETRY SYNC</button>
+        <button class="guest-btn" style="width:auto; margin-top:20px; padding:10px 30px;" onclick="location.reload()">RETRY SYNC</button>
     </div>
 
     <div id="splash">
@@ -103,7 +98,8 @@
 
     <div id="gatekeeper">
         <div class="auth-card">
-            <h2 style="margin-top:0; color:#0062ff;">Identity Verification</h2>
+            <h2 style="margin-top:0; color:#0062ff;">Nutchellxer Sync</h2>
+            <p style="font-size:14px; color:#666;">Verify identity to access ultra-sync edits.</p>
             <div class="cf-turnstile" data-sitekey="0x4AAAAAACbZbO-hqA8mdhlk" data-callback="onCloudflareSuccess"></div>
             
             <div id="auth-options" style="display:none; margin-top:20px;">
@@ -112,11 +108,10 @@
                 
                 <button class="github-btn" onclick="loginGithub()">
                     <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" style="width:18px; filter:invert(1); margin-right:10px;">
-                    Sign in with GitHub
+                    GitHub Login
                 </button>
                 
-                <hr style="margin:20px 0; border:0; border-top:1px solid #ddd;">
-                <button class="guest-btn" onclick="continueAsGuest()">Continue as Guest (Limited)</button>
+                <button class="guest-btn" onclick="continueAsGuest()">Enter as Guest</button>
             </div>
         </div>
     </div>
@@ -134,7 +129,7 @@
                 <div id="private-auth-ui">
                     <p id="private-msg">Archive Locked</p>
                     <div id="private-controls">
-                        <input type="password" id="privatePass" class="pass-input" placeholder="Access Code">
+                        <input type="password" id="privatePass" class="pass-input" placeholder="Access Code" style="color:#000; background:#fff;">
                         <button class="pass-btn" onclick="checkPrivatePass()">Unlock</button>
                     </div>
                 </div>
@@ -152,57 +147,32 @@
     <script>
         const RES_URL = "https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/";
         const SECURE_KEY = "OTEyNjQ4"; 
-        let isGuest = false;
+        let currentVideo = null; // THE "ULTRA SYNC" WATCHDOG
 
-        // 1. SPLASH & OFFLINE LOGIC
+        // 1. SPLASH LOGIC
         setTimeout(() => {
             document.getElementById('splash').classList.add('hidden');
             document.getElementById('gatekeeper').style.display = 'flex';
         }, 3000);
 
-        window.addEventListener('offline', () => {
-            document.getElementById('offline-ui').style.display = 'flex';
-            startDino();
-        });
-        window.addEventListener('online', () => document.getElementById('offline-ui').style.display = 'none');
-
-        // 2. DINO GAME LOGIC (NUTCHELLXER THEMED)
-        function startDino() {
-            const canvas = document.getElementById('dino-canvas');
-            const ctx = canvas.getContext('2d');
-            let dinoY = 130, isJumping = false, obsX = 320, score = 0;
-            function gameLoop() {
-                ctx.clearRect(0,0,320,150);
-                ctx.fillStyle = "#0062ff"; // Dino Color
-                if(isJumping) dinoY -= 4; else if(dinoY < 130) dinoY += 4;
-                if(dinoY < 70) isJumping = false;
-                ctx.fillRect(30, dinoY, 20, 20);
-                ctx.fillStyle = "#ffdb00"; // Obstacle (Gold)
-                obsX -= 5; if(obsX < -20) { obsX = 320; score++; }
-                ctx.fillRect(obsX, 130, 20, 20);
-                if(obsX < 50 && obsX > 10 && dinoY > 110) { score = 0; obsX = 320; }
-                requestAnimationFrame(gameLoop);
+        // 2. VIDEO WATCHDOG (AUTO-PAUSE)
+        function handleVideoPlay(event) {
+            if (currentVideo && currentVideo !== event.target) {
+                currentVideo.pause(); // Collapse previous video
             }
-            canvas.onclick = () => { if(dinoY >= 130) isJumping = true; };
-            gameLoop();
+            currentVideo = event.target;
         }
 
-        // 3. AUTH & PROFILE LOGIC
+        // 3. AUTH LOGIC
         function onCloudflareSuccess() { document.getElementById('auth-options').style.display = 'block'; }
-
+        
         function handleGoogleSignIn(response) {
             const data = JSON.parse(atob(response.credential.split('.')[1]));
             updateProfile(data.given_name, data.picture);
             startApp();
         }
 
-        function loginGithub() {
-            // This redirects to GitHub (Requires Client ID in your GitHub settings)
-            window.location.href = `https://github.com/login/oauth/authorize?client_id=YOUR_CLIENT_ID_HERE&scope=user`;
-        }
-
         function continueAsGuest() {
-            isGuest = true;
             updateProfile("Guest User", RES_URL + "ic_launcher.png");
             startApp();
         }
@@ -213,36 +183,16 @@
             document.getElementById('user-profile').style.display = 'flex';
         }
 
-        // 4. APP BUILD LOGIC
         function startApp() {
             document.getElementById('gatekeeper').style.display = 'none';
             document.getElementById('app-content').style.display = 'block';
-            if(isGuest) {
-                document.getElementById('private-msg').innerText = "RESTRICTED: Sign in to unlock.";
-                document.getElementById('private-controls').style.display = 'none';
-            }
             build();
         }
 
-        // (The rest of your build, checkPrivatePass, and createMedia functions remain the same as your previous code)
+        // 4. BUILD APP
         const myArchive = ["yoshi.detche", "amongus.detche", "car.detche", "1st.detche", "meowsol-edit.detche"];
         const myFeatured = ["moza.detche", "test-edit.detche", "mydog.detche"]; 
         const myMedia = ["amongus-bugreport-1.detche"];    
-        const myPrivates = []; 
-
-        function build() {
-            const populate = (list, id, feat) => {
-                const con = document.getElementById(id);
-                if(list.length > 0) {
-                    con.innerHTML = "";
-                    list.forEach(f => con.appendChild(createMedia(f, feat)));
-                }
-            };
-            populate(myFeatured, 'featured-container', true);
-            populate(myMedia, 'media-container', false);
-            const arch = document.getElementById('video-container');
-            myArchive.forEach(f => arch.appendChild(createMedia(f, false)));
-        }
 
         function createMedia(file, isFeat) {
             let el = document.createElement('video');
@@ -250,20 +200,26 @@
             el.className = isFeat ? 'featured-item' : 'stack';
             el.src = RES_URL + file;
             el.poster = RES_URL + "nutchellxer.thumb";
+            el.addEventListener('play', handleVideoPlay); // Add Watchdog
             return el;
         }
 
-        function checkPrivatePass() {
-            const input = document.getElementById('privatePass').value;
-            if(btoa(input) === SECURE_KEY) {
-                document.getElementById('private-auth-ui').style.display = 'none';
-                const con = document.getElementById('private-container');
-                con.style.display = 'block';
-                myPrivates.forEach(f => con.appendChild(createMedia(f, false)));
-            } else { alert("Incorrect Code"); }
+        function build() {
+            const populate = (list, id, feat) => {
+                const con = document.getElementById(id);
+                con.innerHTML = "";
+                list.forEach(f => con.appendChild(createMedia(f, feat)));
+            };
+            populate(myFeatured, 'featured-container', true);
+            populate(myMedia, 'media-container', false);
+            const arch = document.getElementById('video-container');
+            myArchive.forEach(f => arch.appendChild(createMedia(f, false)));
         }
 
-        // Footer Drag Logic
+        // 5. OFFLINE LOGIC
+        window.addEventListener('offline', () => { document.getElementById('offline-ui').style.display = 'flex'; });
+
+        // Footer Drag
         const box = document.getElementById("drag-footer");
         let active = false, xOff = 0, yOff = 0, startX, startY;
         box.addEventListener("touchstart", (e) => { startX = e.touches[0].clientX - xOff; startY = e.touches[0].clientY - yOff; active = true; });
@@ -272,3 +228,4 @@
     </script>
 </body>
 </html>
+ 
