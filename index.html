@@ -23,16 +23,19 @@
             overflow-x: hidden; text-align: center;
         }
 
-        /* --- SPLASH FIX --- */
+        /* --- HYBRID SPLASH (Image + Video) --- */
         #splash {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: #000; display: flex; justify-content: center;
-            align-items: center; z-index: 99999; /* Higher priority */
+            align-items: center; z-index: 99999;
             opacity: 1; visibility: visible;
             transition: opacity 0.8s ease, visibility 0.8s;
         }
         #splash.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        #splash video { width: 100%; height: 100%; object-fit: cover; }
+        
+        #splash img, #splash video { 
+            position: absolute; width: 100%; height: 100%; object-fit: cover; 
+        }
 
         #app-content { 
             display: none; padding: 20px; min-height: 100vh; 
@@ -46,9 +49,10 @@
         #private-section { background: var(--violet); color: #fff; }
 
         .inner-content { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); padding: 20px; border-radius: 18px; }
-        #private-section .inner-content { background: rgba(0, 0, 0, 0.3); }
-
+        
+        /* Media Elements */
         .stack, .featured-item { width: 100%; max-width: 500px; margin: 25px auto; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); background: var(--glass); backdrop-filter: var(--blur); display: block; }
+        audio.stack { height: 50px; }
 
         #drag-footer { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 420px; background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(25px); border: 1px solid rgba(0, 98, 255, 0.4); border-radius: 24px; z-index: 9998; }
         .drag-handle { padding: 12px; cursor: move; font-size: 10px; color: var(--blue); }
@@ -58,7 +62,8 @@
 <body>
 
     <div id="splash">
-        <video id="splashVideo" autoplay muted playsinline>
+        <img src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/nutchellxer.splash">
+        <video id="splashVideo" autoplay playsinline>
             <source src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/nutchellxer.splash" type="video/mp4">
         </video>
     </div>
@@ -70,15 +75,15 @@
         </div>
 
         <div id="featured-section" class="section-container">
-            <div class="inner-content"><b>⭐ FEATURED</b><div id="featured-container">No featured content yet</div></div>
+            <div class="inner-content"><b>⭐ FEATURED</b><div id="featured-container"></div></div>
         </div>
 
         <div id="media-section" class="section-container">
-            <div class="inner-content"><b>🎬 MEDIA</b><div id="media-container">No media yet</div></div>
+            <div class="inner-content"><b>🎬 MEDIA</b><div id="media-container"></div></div>
         </div>
 
         <div id="private-section" class="section-container">
-            <div class="inner-content"><b>🔒 PRIVATE</b><div id="private-container">No private content yet</div></div>
+            <div class="inner-content"><b>🔒 PRIVATE</b><div id="private-container"></div></div>
         </div>
 
         <div id="video-container"></div>
@@ -99,29 +104,43 @@
 
         const RES_URL = "https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/";
 
+        // Detects if the file is likely an image or audio based on common patterns
         function createMedia(file, isFeat) {
-            const v = document.createElement('video');
-            v.className = isFeat ? 'featured-item' : 'stack';
-            v.src = RES_URL + file;
-            v.controls = true; 
-            v.poster = RES_URL + "nutchellxer.thumb"; 
-            v.onplay = () => { document.querySelectorAll('video').forEach(vid => { if (vid !== v) vid.pause(); }); };
-            v.onerror = () => { v.style.display='none'; };
-            return v;
+            let el;
+            const fileName = file.toLowerCase();
+            
+            // Basic detection logic for .detche contents
+            if (fileName.includes('img') || fileName.includes('png') || fileName.includes('jpg')) {
+                el = document.createElement('img');
+            } else if (fileName.includes('audio') || fileName.includes('mp3') || fileName.includes('wav')) {
+                el = document.createElement('audio');
+                el.controls = true;
+            } else {
+                el = document.createElement('video');
+                el.controls = true;
+                el.poster = RES_URL + "nutchellxer.thumb";
+                el.onplay = () => { document.querySelectorAll('video, audio').forEach(m => { if (m !== el) m.pause(); }); };
+            }
+
+            el.className = isFeat ? 'featured-item' : 'stack';
+            el.src = RES_URL + file;
+            el.onerror = () => { el.style.display='none'; };
+            return el;
         }
 
         function build() {
             const populate = (list, id, feat) => {
                 const con = document.getElementById(id);
-                if(list.length > 0) {
-                    con.innerHTML = "";
-                    list.forEach(f => con.appendChild(createMedia(f, feat)));
-                }
+                con.innerHTML = list.length > 0 ? "" : "No content yet";
+                list.forEach(f => con.appendChild(createMedia(f, feat)));
             };
             populate(myFeatured, 'featured-container', true);
             populate(myMedia, 'media-container', false);
             populate(myPrivates, 'private-container', false);
-            myArchive.forEach(f => document.getElementById('video-container').appendChild(createMedia(f, false)));
+            
+            const arch = document.getElementById('video-container');
+            arch.innerHTML = "";
+            myArchive.forEach(f => arch.appendChild(createMedia(f, false)));
         }
 
         function startApp() {
@@ -149,7 +168,6 @@
         });
         window.addEventListener("touchend", () => active = false);
 
-        // Timer set to exactly 3 seconds
         setTimeout(startApp, 3000); 
     </script>
 </body>
