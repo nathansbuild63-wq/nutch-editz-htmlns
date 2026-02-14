@@ -192,12 +192,10 @@
         let currentUser = { name: "Guest", email: null, isSudo: false };
         let currentVideo = null;
 
-        // Config: "Name=URL=Logo"
         const Mygames = [
             "Ascend=https://nathansbuild63-wq.github.io/Ascend/=" + RES_URL + "Ascend-logo.png",
         ];
 
-        // RESTORED: myArchive list
         const myArchive = ["yoshi.detche", "amongus.detche", "car.detche", "1st.detche", "meowsol-edit.detche"];
         const myFeatured = ["moza.detche", "test-edit.detche", "mydog.detche"]; 
         const myMedia = ["amongus-bugreport-1.detche"];    
@@ -244,6 +242,8 @@
             } else if (currentUser.isSudo) {
                 document.getElementById('private-auth-ui').style.display = 'none';
                 document.getElementById('private-container').style.display = 'block';
+                // Trigger injection here so it shows up
+                buildArchive(); 
             } else {
                 alert(`SUDO DENIED: ${currentUser.email} is not authorized.`);
             }
@@ -263,7 +263,6 @@
                 const parts = gameStr.split('=');
                 const name = parts[0], url = parts[1], logo = parts[2];
                 const card = document.createElement('div');
-                
                 if(logo) {
                     card.className = 'game-card logo-btn';
                     card.innerHTML = `<img src="${logo}" alt="${name}">`;
@@ -271,7 +270,6 @@
                     card.className = 'game-card text-btn';
                     card.innerText = name;
                 }
-
                 card.onclick = () => {
                     document.getElementById('active-game-name').innerText = name;
                     document.getElementById('game-frame').src = url;
@@ -299,22 +297,30 @@
         }
 
         function build() {
-            // Build Featured
             const featCon = document.getElementById('featured-container');
             featCon.innerHTML = "";
             myFeatured.forEach(f => featCon.appendChild(createMedia(f, true)));
 
-            // Build Media
             const mediaCon = document.getElementById('media-container');
             mediaCon.innerHTML = "";
             myMedia.forEach(f => mediaCon.appendChild(createMedia(f, false)));
+        }
 
-            // Build Private Archive
+        function buildArchive() {
             const archCon = document.getElementById('private-container');
             archCon.innerHTML = "";
             myArchive.forEach(f => archCon.appendChild(createMedia(f, false)));
         }
 
         function acceptCookies() { localStorage.setItem('nutch_cookies', 'true'); document.getElementById('cookie-popup').classList.remove('show'); }
-        function toggleLogout() { const m = document.getElementById('logout-menu'); m.style.display = (m.style.display === 'block') ? 'none' : 'block';
- 
+        function toggleLogout() { const m = document.getElementById('logout-menu'); m.style.display = (m.style.display === 'block') ? 'none' : 'block'; }
+
+        // Footer Drag
+        const box = document.getElementById("drag-footer");
+        let active = false, xOff = 0, yOff = 0, startX, startY;
+        box.addEventListener("touchstart", (e) => { startX = e.touches[0].clientX - xOff; startY = e.touches[0].clientY - yOff; active = true; });
+        window.addEventListener("touchmove", (e) => { if (active) { xOff = e.touches[0].clientX - startX; yOff = e.touches[0].clientY - startY; box.style.transform = `translate(${xOff}px, ${yOff}px) translateX(-50%)`; } });
+        window.addEventListener("touchend", () => active = false);
+    </script>
+</body>
+</html>
