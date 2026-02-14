@@ -26,7 +26,7 @@
             overflow-x: hidden; text-align: center;
         }
 
-        /* SPLASH & GATEKEEPER */
+        /* --- SPLASH & GATEKEEPER --- */
         #splash {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: black; display: flex; justify-content: center;
@@ -46,7 +46,7 @@
             color: black; width: 85%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
-        /* PROFILE UI */
+        /* --- PROFILE UI --- */
         #user-profile {
             position: fixed; top: 15px; right: 15px; z-index: 100000;
             display: none; flex-direction: column; align-items: flex-end;
@@ -67,32 +67,32 @@
             backdrop-filter: blur(10px);
         }
 
-        /* GAMES UI */
+        /* --- CONTENT STYLING --- */
+        #app-content { display: none; padding: 20px; min-height: 100vh; padding-bottom: 220px; }
+        .section-container { color: #000; padding: 2px; border-radius: 20px; margin: 30px auto; max-width: 550px; }
         #games-section { background: var(--blue); color: white; }
+        #featured-section { background: var(--gold); }
+        #media-section { background: var(--orange); }
+        #archive-section { background: #333; color: white; }
+        #private-section { background: var(--violet); color: #fff; }
+        
+        .inner-content { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); padding: 20px; border-radius: 18px; }
+        
+        .stack, .featured-item { width: 100%; max-width: 500px; margin: 25px auto; border-radius: 15px; background: var(--glass); backdrop-filter: var(--blur); display: block; border: 1px solid rgba(255,255,255,0.1); }
+        err { color: #ff4d4d; font-size: 11px; font-weight: bold; display: block; margin-top: -10px; }
+
+        /* --- GAMES UI --- */
         .game-card { 
             background: rgba(0,0,0,0.3); color: white; margin: 10px; 
             border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); cursor: pointer;
-            display: inline-block; vertical-align: middle; transition: 0.2s; overflow: hidden;
+            display: inline-block; transition: 0.2s; overflow: hidden; width: 80px; height: 80px;
         }
-        .game-card.logo-btn { width: 80px; height: 80px; }
-        .game-card.logo-btn img { width: 100%; height: 100%; object-fit: cover; }
+        .game-card img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* CONTENT STYLING */
-        #app-content { display: none; padding: 20px; min-height: 100vh; padding-bottom: 220px; }
-        .section-container { color: #000; padding: 2px; border-radius: 20px; margin: 30px auto; max-width: 550px; }
-        #featured-section { background: var(--gold); }
-        #media-section { background: var(--orange); }
-        #private-section { background: var(--violet); color: #fff; }
-        .inner-content { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); padding: 20px; border-radius: 18px; }
-        
-        .stack, .featured-item { width: 100%; max-width: 500px; margin: 25px auto; border-radius: 15px; background: var(--glass); backdrop-filter: var(--blur); display: block; }
-        err { color: #ff4444; font-size: 11px; font-weight: bold; display: block; margin-top: -10px; }
-
-        /* BUTTONS */
+        /* --- BUTTONS & FOOTER --- */
         .guest-btn { margin-top: 15px; background: #f0f0f0; color: #444; padding: 12px; border-radius: 12px; border: none; width: 100%; cursor: pointer; font-weight: bold; }
         .github-btn { margin-top: 10px; background: #24292e; color: white; padding: 12px; border-radius: 12px; border: none; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-
-        /* DRAG FOOTER */
+        
         #drag-footer { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 420px; background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(0, 98, 255, 0.4); border-radius: 24px; z-index: 9998; }
         .drag-handle { padding: 12px; cursor: move; color: var(--blue); font-size: 10px; }
         .footer-btn { display: inline-block; padding: 12px 18px; margin: 6px; background: var(--blue); color: white; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 13px; }
@@ -113,7 +113,6 @@
             <div id="auth-options" style="display:none; margin-top:20px;">
                 <div id="g_id_onload" data-client_id="647540282944-usu3rkob8emv3i5rt3g4b9napi7qe7db.apps.googleusercontent.com" data-callback="handleGoogleSignIn"></div>
                 <div class="g_id_signin" data-type="standard"></div>
-                
                 <button class="github-btn" onclick="loginGithub()">GitHub Login</button>
                 <button class="guest-btn" onclick="continueAsGuest()">Enter as Guest</button>
             </div>
@@ -144,11 +143,9 @@
 
         <div id="featured-section" class="section-container"><div class="inner-content"><b>⭐ FEATURED</b><div id="featured-container"></div></div></div>
         
-        <div id="archive-section" class="section-container" style="background:#333; color:white;">
-            <div class="inner-content"><b>📦 ARCHIVE</b><div id="archive-container"></div></div>
-        </div>
-
         <div id="media-section" class="section-container"><div class="inner-content"><b>🎬 MEDIA</b><div id="media-container"></div></div></div>
+
+        <div id="archive-section" class="section-container"><div class="inner-content"><b>📦 ARCHIVE</b><div id="archive-container"></div></div></div>
         
         <div id="private-section" class="section-container">
             <div class="inner-content">
@@ -157,7 +154,7 @@
                     <p>Restricted Access</p>
                     <button class="guest-btn" style="background:white; color:black; width:auto; padding:8px 25px;" onclick="verifySudo()">Verify SUDO</button>
                 </div>
-                <div id="private-container" style="display:none;"></div>
+                <div id="private-container" style="display:none;">Admin Content Unlocked.</div>
             </div>
         </div>
 
@@ -172,28 +169,28 @@
     <script>
         const RES_URL = "https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/";
         const ADMIN_EMAIL = "nutchellexer@gmail.com";
-        const GITHUB_CLIENT_ID = "Ov23liA7Zyd7Euym0lYi";
 
-        const myArchive = ["yoshi.detche", "amongus.detche", "car.detche", "1st.detche"];
-        const myFeatured = ["moza.detche", "meowsol-edit.detche", "mydog.detche"]; 
+        // FILES RESTORED (Including the ones u said were missing)
+        const myFeatured = ["moza.detche", "mydog.detche"]; 
+        const myArchive = ["yoshi.detche", "amongus.detche", "car.detche", "1st.detche", "meowsol-edit.detche"];
+        const myMedia = ["amongus-bugreport-1.detche"];    
         const Mygames = ["Ascend=https://nathansbuild63-wq.github.io/Ascend/=" + RES_URL + "Ascend-logo.png"];
 
         let currentUser = { name: "Guest", email: null, isSudo: false };
 
-        // 1. SPLASH LOGIC (Wait for video to end or 5s timeout)
+        // 1. SPLASH LOGIC (Waits for video end)
         const splashVid = document.getElementById('splashVideo');
         const endSplash = () => {
             if(window.splashDone) return;
             window.splashDone = true;
-            const splash = document.getElementById('splash');
-            splash.classList.add('fade-out');
+            document.getElementById('splash').classList.add('fade-out');
             setTimeout(() => {
-                splash.style.display = 'none';
+                document.getElementById('splash').style.display = 'none';
                 document.getElementById('gatekeeper').style.display = 'flex';
             }, 800);
         };
         splashVid.onended = endSplash;
-        setTimeout(endSplash, 5000); // Failsafe timeout
+        setTimeout(endSplash, 6000); // 6s Safety Timeout
 
         // 2. AUTH LOGIC
         function onCloudflareSuccess() { 
@@ -207,8 +204,8 @@
             startApp();
         }
 
-        function loginGithub() { window.location.href = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&scope=user`; }
-        function continueAsGuest() { updateProfile("Guest User", RES_URL + "ic_launcher.png", null); startApp(); }
+        function loginGithub() { window.location.href = `https://github.com/login/oauth/authorize?client_id=Ov23liA7Zyd7Euym0lYi&scope=user`; }
+        function continueAsGuest() { updateProfile("Guest", RES_URL + "ic_launcher.png", null); startApp(); }
 
         function updateProfile(name, img, email) {
             currentUser = { name, email, isSudo: (email === ADMIN_EMAIL) };
@@ -216,14 +213,6 @@
             document.getElementById('user-name').innerText = name;
             document.getElementById('user-profile').style.display = 'flex';
             if(currentUser.isSudo) document.getElementById('sudo-badge').style.display = 'inline-block';
-        }
-
-        function verifySudo() {
-            if (currentUser.isSudo) {
-                document.getElementById('private-auth-ui').style.display = 'none';
-                document.getElementById('private-container').style.display = 'block';
-                document.getElementById('private-container').innerText = "Admin Access Granted.";
-            } else { alert("SUDO DENIED."); }
         }
 
         // 3. APP START & BUILD
@@ -238,13 +227,12 @@
             const el = document.createElement('video');
             el.className = isFeat ? 'featured-item' : 'stack';
             el.src = RES_URL + file;
-            el.controls = true; el.poster = RES_URL + "nutchellxer.thumb";
+            el.controls = true; 
+            el.poster = RES_URL + "nutchellxer.thumb";
             
-            // AUTO-PAUSE LOGIC: Stop other videos when this one plays
+            // AUTO-STOP LOGIC
             el.onplay = () => {
-                document.querySelectorAll('video').forEach(v => {
-                    if (v !== el) v.pause();
-                });
+                document.querySelectorAll('video').forEach(v => { if (v !== el) v.pause(); });
             };
 
             el.onerror = () => { el.style.display='none'; el.insertAdjacentHTML('afterend', `<err>Missing: ${file}</err>`); };
@@ -252,10 +240,9 @@
         }
 
         function build() {
-            const feat = document.getElementById('featured-container');
-            myFeatured.forEach(f => feat.appendChild(createMedia(f, true)));
-            const arch = document.getElementById('archive-container');
-            myArchive.forEach(f => arch.appendChild(createMedia(f, false)));
+            myFeatured.forEach(f => document.getElementById('featured-container').appendChild(createMedia(f, true)));
+            myArchive.forEach(f => document.getElementById('archive-container').appendChild(createMedia(f, false)));
+            myMedia.forEach(f => document.getElementById('media-container').appendChild(createMedia(f, false)));
         }
 
         function buildGames() {
@@ -263,21 +250,24 @@
             Mygames.forEach(gameStr => {
                 const [name, url, logo] = gameStr.split('=');
                 const card = document.createElement('div');
-                card.className = 'game-card logo-btn';
+                card.className = 'game-card';
                 card.innerHTML = `<img src="${logo}">`;
-                card.onclick = () => {
-                    document.getElementById('game-frame').src = url;
-                    alert("Launching " + name);
-                };
+                card.onclick = () => window.open(url, '_blank');
                 container.appendChild(card);
             });
+        }
+
+        function verifySudo() {
+            if (currentUser.isSudo) {
+                document.getElementById('private-auth-ui').style.display = 'none';
+                document.getElementById('private-container').style.display = 'block';
+            } else { alert("SUDO DENIED."); }
         }
 
         function toggleLogout() { const m = document.getElementById('logout-menu'); m.style.display = (m.style.display === 'block') ? 'none' : 'block'; }
 
         // 4. FOOTER DRAG
-        const box = document.getElementById("drag-footer");
-        const handle = document.getElementById("drag-handle");
+        const box = document.getElementById("drag-footer"), handle = document.getElementById("drag-handle");
         let active = false, initialX, initialY, xOffset = 0, yOffset = 0;
         handle.addEventListener("touchstart", (e) => { initialX = e.touches[0].clientX - xOffset; initialY = e.touches[0].clientY - yOffset; active = true; });
         window.addEventListener("touchmove", (e) => { if (active) {
