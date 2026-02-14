@@ -192,11 +192,12 @@
         let currentUser = { name: "Guest", email: null, isSudo: false };
         let currentVideo = null;
 
-        // Config: "Name=URL=Logo" OR "Name=URL"
+        // Config: "Name=URL=Logo"
         const Mygames = [
-            "Ascend=https://nathansbuild63-wq.github.io/Ascend/=https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/Ascend-logo.png",
+            "Ascend=https://nathansbuild63-wq.github.io/Ascend/=" + RES_URL + "Ascend-logo.png",
         ];
 
+        // RESTORED: myArchive list
         const myArchive = ["yoshi.detche", "amongus.detche", "car.detche", "1st.detche", "meowsol-edit.detche"];
         const myFeatured = ["moza.detche", "test-edit.detche", "mydog.detche"]; 
         const myMedia = ["amongus-bugreport-1.detche"];    
@@ -285,7 +286,7 @@
         function createMedia(file, isFeat) {
             let el = document.createElement('video');
             el.controls = true; 
-            el.preload = "auto"; // Zero loading on videos
+            el.preload = "auto"; 
             el.muted = true;
             el.className = isFeat ? 'featured-item' : 'stack';
             el.src = RES_URL + file; 
@@ -315,14 +316,5 @@
         }
 
         function acceptCookies() { localStorage.setItem('nutch_cookies', 'true'); document.getElementById('cookie-popup').classList.remove('show'); }
-        function toggleLogout() { const m = document.getElementById('logout-menu'); m.style.display = (m.style.display === 'block') ? 'none' : 'block'; }
-
-        // Footer Drag
-        const box = document.getElementById("drag-footer");
-        let active = false, xOff = 0, yOff = 0, startX, startY;
-        box.addEventListener("touchstart", (e) => { startX = e.touches[0].clientX - xOff; startY = e.touches[0].clientY - yOff; active = true; });
-        window.addEventListener("touchmove", (e) => { if (active) { xOff = e.touches[0].clientX - startX; yOff = e.touches[0].clientY - startY; box.style.transform = `translate(${xOff}px, ${yOff}px) translateX(-50%)`; } });
-        window.addEventListener("touchend", () => active = false);
-    </script>
-</body>
-</html>
+        function toggleLogout() { const m = document.getElementById('logout-menu'); m.style.display = (m.style.display === 'block') ? 'none' : 'block';
+ 
