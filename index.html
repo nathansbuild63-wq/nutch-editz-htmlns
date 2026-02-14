@@ -47,32 +47,6 @@
             backdrop-filter: blur(10px);
         }
 
-        /* COOKIE POPUP */
-        #cookie-popup {
-            position: fixed; bottom: -200px; left: 50%; transform: translateX(-50%);
-            width: 85%; max-width: 400px; background: white; color: black;
-            padding: 20px; border-radius: 25px; z-index: 100002; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.5); text-align: left;
-        }
-        #cookie-popup.show { bottom: 20px; }
-
-        /* GAMES UI */
-        #games-section { background: var(--blue); color: white; }
-        .game-card { 
-            background: rgba(0,0,0,0.3); color: white; margin: 10px; 
-            border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); cursor: pointer;
-            display: inline-block; vertical-align: middle; transition: 0.2s; overflow: hidden;
-        }
-        .game-card.text-btn { width: 110px; font-size: 12px; padding: 15px 5px; }
-        .game-card.logo-btn { width: 80px; height: 80px; }
-        .game-card.logo-btn img { width: 100%; height: 100%; object-fit: cover; }
-
-        #game-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #000; z-index: 100005; display: none; flex-direction: column;
-        }
-        #game-frame { width: 100%; height: calc(100% - 60px); border: none; }
-
         /* SPLASH & GATEKEEPER */
         #splash {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -90,13 +64,15 @@
             background: rgba(255, 255, 255, 0.95); padding: 35px; border-radius: 35px; 
             color: black; width: 85%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
-        
+
         .guest-btn { margin-top: 15px; background: #f0f0f0; color: #444; padding: 12px; border-radius: 12px; border: none; width: 100%; cursor: pointer; font-weight: bold; }
         .github-btn { margin-top: 10px; background: #24292e; color: white; padding: 12px; border-radius: 12px; border: none; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
         
+        /* APP CONTENT */
         #app-content { display: none; padding: 20px; min-height: 100vh; background: radial-gradient(circle at top, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%); padding-bottom: 220px; }
         .section-container { color: #000; padding: 2px; border-radius: 20px; margin: 30px auto; max-width: 550px; }
         #featured-section { background: var(--gold); }
+        #archive-section { background: #333; color: white; }
         #media-section { background: var(--orange); }
         #private-section { background: var(--violet); color: #fff; }
         .inner-content { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); padding: 20px; border-radius: 18px; }
@@ -109,20 +85,6 @@
 </head>
 <body>
 
-    <div id="cookie-popup">
-        <h3 style="margin:0 0 10px 0;">Cookies & Theory</h3>
-        <p style="font-size:12px; line-height:1.5;">We use cookies for sync persistence. By entering, you accept our local storage usage.</p>
-        <button class="guest-btn" style="background:var(--blue); color:white;" onclick="acceptCookies()">Allow Cookies</button>
-    </div>
-
-    <div id="game-overlay">
-        <div style="height:60px; display:flex; align-items:center; padding:0 20px; background:#111;">
-            <span id="active-game-name" style="font-weight:bold; color:var(--blue);">Game Name</span>
-            <button onclick="closeGame()" style="margin-left:auto; background:#ff4d4d; color:white; border:none; padding:8px 15px; border-radius:10px; font-weight:bold;">CLOSE</button>
-        </div>
-        <iframe id="game-frame"></iframe>
-    </div>
-
     <div id="user-profile">
         <div class="profile-pill" onclick="toggleLogout()">
             <img id="user-avatar" src="">
@@ -134,19 +96,16 @@
 
     <div id="splash">
         <img src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/nutchellxer.splash">
-        <video id="splashVideo" autoplay playsinline muted loop><source src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/nutchellxer.splash" type="video/mp4"></video>
+        <video autoplay playsinline muted loop><source src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/nutchellxer.splash" type="video/mp4"></video>
     </div>
 
     <div id="gatekeeper">
         <div class="auth-card">
             <h2 style="margin-top:0; color:#0062ff;">Nutchellxer Sync</h2>
-            <div class="cf-turnstile" data-sitekey="0x4AAAAAACbZbO-hqA8mdhlk" data-callback="onCloudflareSuccess"></div>
-            <div id="auth-options" style="display:none; margin-top:20px;">
-                <div id="g_id_onload" data-client_id="647540282944-usu3rkob8emv3i5rt3g4b9napi7qe7db.apps.googleusercontent.com" data-callback="handleGoogleSignIn"></div>
-                <div class="g_id_signin" data-type="standard"></div>
-                <button class="github-btn" onclick="loginGithub()">GitHub Login</button>
-                <button class="guest-btn" onclick="continueAsGuest()">Enter as Guest</button>
+            <div id="ts-box">
+                <div class="cf-turnstile" data-sitekey="0x4AAAAAACbZbO-hqA8mdhlk" data-callback="onCloudflareSuccess"></div>
             </div>
+            <div id="auth-options" style="margin-top:20px;"></div>
         </div>
     </div>
 
@@ -156,24 +115,22 @@
             <h1>Nutchellxer Editz</h1>
         </div>
 
-        <div id="games-section" class="section-container">
-            <div class="inner-content">
-                <b>🎮 INTERACTIVE GAMES</b>
-                <div id="games-container" style="overflow-x:auto; white-space:nowrap; padding:10px 0;"></div>
-            </div>
-        </div>
-
         <div id="featured-section" class="section-container"><div class="inner-content"><b>⭐ FEATURED</b><div id="featured-container"></div></div></div>
+        
+        <div id="archive-section" class="section-container"><div class="inner-content"><b>📦 ARCHIVE</b><div id="archive-container"></div></div></div>
+        
         <div id="media-section" class="section-container"><div class="inner-content"><b>🎬 MEDIA</b><div id="media-container"></div></div></div>
         
         <div id="private-section" class="section-container">
             <div class="inner-content">
                 <b>🔒 PRIVATE (SUDO)</b>
                 <div id="private-auth-ui">
-                    <p id="private-msg">Archive Restricted</p>
+                    <p>Access Restricted to Admin</p>
                     <button class="guest-btn" style="background:white; color:black; width:auto; padding:8px 25px;" onclick="verifySudo()">Verify SUDO Identity</button>
                 </div>
-                <div id="private-container" style="display: none;"></div>
+                <div id="private-container" style="display: none;">
+                    <p>SUDO Access Granted. Welcome Back.</p>
+                </div>
             </div>
         </div>
 
@@ -190,43 +147,39 @@
         const GITHUB_CLIENT_ID = "Ov23liA7Zyd7Euym0lYi"; 
         
         let currentUser = { name: "Guest", email: null, isSudo: false };
-        let currentVideo = null;
-
-        const Mygames = [
-            "Ascend=https://nathansbuild63-wq.github.io/Ascend/=" + RES_URL + "Ascend-logo.png",
-        ];
 
         const myArchive = ["yoshi.detche", "amongus.detche", "car.detche", "1st.detche", "meowsol-edit.detche"];
         const myFeatured = ["moza.detche", "test-edit.detche", "mydog.detche"]; 
         const myMedia = ["amongus-bugreport-1.detche"];    
 
-        // FIXED SPLASH TIMER
-        window.addEventListener('DOMContentLoaded', () => {
-            if (!localStorage.getItem('nutch_cookies')) {
-                setTimeout(() => document.getElementById('cookie-popup').classList.add('show'), 4000);
-            }
-            
-            // Forces exit from splash after 3s no matter what
+        // 1. Splash Logic - Guaranteed move after 3s
+        window.onload = () => {
             setTimeout(() => {
-                document.getElementById('splash').classList.add('hidden');
-                const params = new URLSearchParams(window.location.search);
-                if (params.has('code')) {
-                    updateProfile("GitHub User", "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png", "nutchellexer@gmail.com"); 
-                    startApp();
-                } else {
-                    document.getElementById('gatekeeper').style.display = 'flex';
-                }
+                document.getElementById('splash').style.display = 'none';
+                document.getElementById('gatekeeper').style.display = 'flex';
             }, 3000);
-        });
+        };
 
-        function onCloudflareSuccess() { document.getElementById('auth-options').style.display = 'block'; }
-        
+        // 2. Cloudflare Flow - Inject buttons ONLY after success
+        function onCloudflareSuccess() {
+            document.getElementById('ts-box').style.display = 'none';
+            const authDiv = document.getElementById('auth-options');
+            authDiv.innerHTML = `
+                <div id="g_id_onload" data-client_id="647540282944-usu3rkob8emv3i5rt3g4b9napi7qe7db.apps.googleusercontent.com" data-callback="handleGoogleSignIn"></div>
+                <div class="g_id_signin" data-type="standard"></div>
+                <button class="github-btn" onclick="loginGithub()">GitHub Login</button>
+                <button class="guest-btn" onclick="continueAsGuest()">Enter as Guest</button>
+            `;
+            // Trigger Google script to render the newly injected button
+            google.accounts.id.renderButton(document.querySelector(".g_id_signin"), { type: "standard" });
+        }
+
+        // 3. Auth Handlers
         function handleGoogleSignIn(response) {
             const data = JSON.parse(atob(response.credential.split('.')[1]));
             updateProfile(data.given_name, data.picture, data.email);
             startApp();
         }
-
         function loginGithub() { window.location.href = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&scope=user`; }
         function continueAsGuest() { updateProfile("Guest User", RES_URL + "ic_launcher.png", null); startApp(); }
 
@@ -238,90 +191,44 @@
             if(currentUser.isSudo) document.getElementById('sudo-badge').style.display = 'inline-block';
         }
 
-        function verifySudo() {
-            if (!currentUser.email) {
-                alert("SUDO ERROR: Unauthorized guest session.");
-            } else if (currentUser.isSudo) {
-                document.getElementById('private-auth-ui').style.display = 'none';
-                document.getElementById('private-container').style.display = 'block';
-                buildArchive(); 
-            } else {
-                alert(`SUDO DENIED: ${currentUser.email} is not authorized.`);
-            }
-        }
-
         function startApp() {
             document.getElementById('gatekeeper').style.display = 'none';
             document.getElementById('app-content').style.display = 'block';
-            build();
-            buildGames();
+            buildContent();
         }
 
-        function buildGames() {
-            const container = document.getElementById('games-container');
-            container.innerHTML = "";
-            Mygames.forEach(gameStr => {
-                const parts = gameStr.split('=');
-                const name = parts[0], url = parts[1], logo = parts[2];
-                const card = document.createElement('div');
-                if(logo) {
-                    card.className = 'game-card logo-btn';
-                    card.innerHTML = `<img src="${logo}" alt="${name}">`;
-                } else {
-                    card.className = 'game-card text-btn';
-                    card.innerText = name;
-                }
-                card.onclick = () => {
-                    document.getElementById('active-game-name').innerText = name;
-                    document.getElementById('game-frame').src = url;
-                    document.getElementById('game-overlay').style.display = 'flex';
-                };
-                container.appendChild(card);
-            });
-        }
-
-        function closeGame() { document.getElementById('game-overlay').style.display = 'none'; document.getElementById('game-frame').src = ""; }
-
+        // 4. Content Builder (Archive is now separate)
         function createMedia(file, isFeat) {
             let el = document.createElement('video');
-            el.controls = true; 
-            el.preload = "auto"; 
-            el.muted = true;
+            el.controls = true; el.preload = "auto"; el.muted = true;
             el.className = isFeat ? 'featured-item' : 'stack';
             el.src = RES_URL + file; 
             el.poster = RES_URL + "nutchellxer.thumb";
-            el.addEventListener('play', (e) => { 
-                if (currentVideo && currentVideo !== e.target) currentVideo.pause(); 
-                currentVideo = e.target; 
-            });
             return el;
         }
 
-        function build() {
-            const featCon = document.getElementById('featured-container');
-            featCon.innerHTML = "";
-            myFeatured.forEach(f => featCon.appendChild(createMedia(f, true)));
+        function buildContent() {
+            const feat = document.getElementById('featured-container');
+            myFeatured.forEach(f => feat.appendChild(createMedia(f, true)));
 
-            const mediaCon = document.getElementById('media-container');
-            mediaCon.innerHTML = "";
-            myMedia.forEach(f => mediaCon.appendChild(createMedia(f, false)));
+            const arch = document.getElementById('archive-container');
+            myArchive.forEach(f => arch.appendChild(createMedia(f, false)));
+
+            const med = document.getElementById('media-container');
+            myMedia.forEach(f => med.appendChild(createMedia(f, false)));
         }
 
-        function buildArchive() {
-            const archCon = document.getElementById('private-container');
-            archCon.innerHTML = "";
-            myArchive.forEach(f => archCon.appendChild(createMedia(f, false)));
+        function verifySudo() {
+            if (currentUser.isSudo) {
+                document.getElementById('private-auth-ui').style.display = 'none';
+                document.getElementById('private-container').style.display = 'block';
+            } else {
+                alert("ACCESS DENIED: You are not Nutchellxer.");
+            }
         }
 
-        function acceptCookies() { localStorage.setItem('nutch_cookies', 'true'); document.getElementById('cookie-popup').classList.remove('show'); }
         function toggleLogout() { const m = document.getElementById('logout-menu'); m.style.display = (m.style.display === 'block') ? 'none' : 'block'; }
-
-        // FIXED FOOTER DRAG LISTENERS
-        const box = document.getElementById("drag-footer");
-        let active = false, xOff = 0, yOff = 0, startX, startY;
-        box.addEventListener("touchstart", (e) => { startX = e.touches[0].clientX - xOff; startY = e.touches[0].clientY - yOff; active = true; });
-        window.addEventListener("touchmove", (e) => { if (active) { xOff = e.touches[0].clientX - startX; yOff = e.touches[0].clientY - startY; box.style.transform = `translate(${xOff}px, ${yOff}px) translateX(-50%)`; } });
-        window.addEventListener("touchend", () => { active = false; });
     </script>
 </body>
 </html>
+
