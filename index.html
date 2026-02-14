@@ -26,6 +26,26 @@
             overflow-x: hidden; text-align: center;
         }
 
+        /* SPLASH & GATEKEEPER */
+        #splash {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: black; display: flex; justify-content: center;
+            align-items: center; z-index: 99999; opacity: 1;
+            transition: opacity 0.8s ease; pointer-events: all;
+        }
+        #splash.fade-out { opacity: 0; pointer-events: none; }
+        #splash video, #splash img { width: 100%; height: 100%; object-fit: cover; position: absolute; }
+
+        #gatekeeper { 
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(25px); 
+            display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 99998; 
+        }
+        .auth-card { 
+            background: rgba(255, 255, 255, 0.95); padding: 35px; border-radius: 35px; 
+            color: black; width: 85%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
         /* PROFILE UI */
         #user-profile {
             position: fixed; top: 15px; right: 15px; z-index: 100000;
@@ -47,15 +67,6 @@
             backdrop-filter: blur(10px);
         }
 
-        /* COOKIE POPUP */
-        #cookie-popup {
-            position: fixed; bottom: -200px; left: 50%; transform: translateX(-50%);
-            width: 85%; max-width: 400px; background: white; color: black;
-            padding: 20px; border-radius: 25px; z-index: 100002; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.5); text-align: left;
-        }
-        #cookie-popup.show { bottom: 20px; }
-
         /* GAMES UI */
         #games-section { background: var(--blue); color: white; }
         .game-card { 
@@ -63,7 +74,6 @@
             border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); cursor: pointer;
             display: inline-block; vertical-align: middle; transition: 0.2s; overflow: hidden;
         }
-        .game-card.text-btn { width: 110px; font-size: 12px; padding: 15px 5px; }
         .game-card.logo-btn { width: 80px; height: 80px; }
         .game-card.logo-btn img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -73,55 +83,46 @@
         }
         #game-frame { width: 100%; height: calc(100% - 60px); border: none; }
 
-        /* SPLASH & GATEKEEPER */
-        #splash {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 99999; overflow: hidden;
-            display: flex; justify-content: center; align-items: center;
-        }
-        #splash img, #splash video { width: 100%; height: 100%; object-fit: cover; position: absolute; }
-
-        #gatekeeper { 
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.9); backdrop-filter: blur(25px); 
-            display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 99998; 
-        }
-        .auth-card { 
-            background: rgba(255, 255, 255, 0.95); padding: 35px; border-radius: 35px; 
-            color: black; width: 85%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
-        
-        .guest-btn { margin-top: 15px; background: #f0f0f0; color: #444; padding: 12px; border-radius: 12px; border: none; width: 100%; cursor: pointer; font-weight: bold; }
-        .github-btn { margin-top: 10px; background: #24292e; color: white; padding: 12px; border-radius: 12px; border: none; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-        
-        #app-content { display: none; padding: 20px; min-height: 100vh; background: radial-gradient(circle at top, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%); padding-bottom: 220px; }
+        /* CONTENT STYLING */
+        #app-content { display: none; padding: 20px; min-height: 100vh; padding-bottom: 220px; }
         .section-container { color: #000; padding: 2px; border-radius: 20px; margin: 30px auto; max-width: 550px; }
         #featured-section { background: var(--gold); }
-        #archive-section { background: #333; color: white; } /* Dark theme for archive */
         #media-section { background: var(--orange); }
         #private-section { background: var(--violet); color: #fff; }
         .inner-content { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); padding: 20px; border-radius: 18px; }
-        .stack, .featured-item { width: 100%; max-width: 500px; margin: 25px auto; border-radius: 15px; background: var(--glass); backdrop-filter: var(--blur); display: block; }
         
+        .stack, .featured-item { width: 100%; max-width: 500px; margin: 25px auto; border-radius: 15px; background: var(--glass); backdrop-filter: var(--blur); display: block; }
+        err { color: #ff4444; font-size: 11px; font-weight: bold; display: block; margin-top: -10px; }
+
+        /* BUTTONS */
+        .guest-btn { margin-top: 15px; background: #f0f0f0; color: #444; padding: 12px; border-radius: 12px; border: none; width: 100%; cursor: pointer; font-weight: bold; }
+        .github-btn { margin-top: 10px; background: #24292e; color: white; padding: 12px; border-radius: 12px; border: none; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+
+        /* DRAG FOOTER */
         #drag-footer { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 420px; background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(0, 98, 255, 0.4); border-radius: 24px; z-index: 9998; }
+        .drag-handle { padding: 12px; cursor: move; color: var(--blue); font-size: 10px; }
         .footer-btn { display: inline-block; padding: 12px 18px; margin: 6px; background: var(--blue); color: white; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 13px; }
-        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <div id="cookie-popup">
-        <h3 style="margin:0 0 10px 0;">Cookies & Theory</h3>
-        <p style="font-size:12px; line-height:1.5;">We use cookies for sync persistence. By entering, you accept our local storage usage.</p>
-        <button class="guest-btn" style="background:var(--blue); color:white;" onclick="acceptCookies()">Allow Cookies</button>
+    <div id="splash">
+        <img src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/nutchellxer.splash">
+        <video id="splashVideo" src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/nutchellxer.splash" autoplay muted playsinline></video>
     </div>
 
-    <div id="game-overlay">
-        <div style="height:60px; display:flex; align-items:center; padding:0 20px; background:#111;">
-            <span id="active-game-name" style="font-weight:bold; color:var(--blue);">Game Name</span>
-            <button onclick="closeGame()" style="margin-left:auto; background:#ff4d4d; color:white; border:none; padding:8px 15px; border-radius:10px; font-weight:bold;">CLOSE</button>
+    <div id="gatekeeper">
+        <div class="auth-card">
+            <h2 style="margin-top:0; color:#0062ff;">Nutchellxer Sync</h2>
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAACbZbO-hqA8mdhlk" data-callback="onCloudflareSuccess"></div>
+            <div id="auth-options" style="display:none; margin-top:20px;">
+                <div id="g_id_onload" data-client_id="647540282944-usu3rkob8emv3i5rt3g4b9napi7qe7db.apps.googleusercontent.com" data-callback="handleGoogleSignIn"></div>
+                <div class="g_id_signin" data-type="standard"></div>
+                
+                <button class="github-btn" onclick="loginGithub()">GitHub Login</button>
+                <button class="guest-btn" onclick="continueAsGuest()">Enter as Guest</button>
+            </div>
         </div>
-        <iframe id="game-frame"></iframe>
     </div>
 
     <div id="user-profile">
@@ -133,22 +134,12 @@
         <div id="logout-menu" onclick="location.reload()">Logout Session</div>
     </div>
 
-    <div id="splash">
-        <img src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/nutchellxer.splash">
-        <video id="splashVideo" autoplay playsinline muted loop><source src="https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/nutchellxer.splash" type="video/mp4"></video>
-    </div>
-
-    <div id="gatekeeper">
-        <div class="auth-card">
-            <h2 style="margin-top:0; color:#0062ff;">Nutchellxer Sync</h2>
-            <div class="cf-turnstile" data-sitekey="0x4AAAAAACbZbO-hqA8mdhlk" data-callback="onCloudflareSuccess"></div>
-            <div id="auth-options" style="display:none; margin-top:20px;">
-                <div id="g_id_onload" data-client_id="647540282944-usu3rkob8emv3i5rt3g4b9napi7qe7db.apps.googleusercontent.com" data-callback="handleGoogleSignIn"></div>
-                <div class="g_id_signin" data-type="standard"></div>
-                <button class="github-btn" onclick="loginGithub()">GitHub Login</button>
-                <button class="guest-btn" onclick="continueAsGuest()">Enter as Guest</button>
-            </div>
+    <div id="game-overlay">
+        <div style="height:60px; display:flex; align-items:center; padding:0 20px; background:#111;">
+            <span id="active-game-name" style="font-weight:bold; color:var(--blue);">Game Name</span>
+            <button onclick="closeGame()" style="margin-left:auto; background:#ff4d4d; color:white; border:none; padding:8px 15px; border-radius:10px; font-weight:bold;">CLOSE</button>
         </div>
+        <iframe id="game-frame"></iframe>
     </div>
 
     <div id="app-content">
@@ -166,11 +157,8 @@
 
         <div id="featured-section" class="section-container"><div class="inner-content"><b>⭐ FEATURED</b><div id="featured-container"></div></div></div>
         
-        <div id="archive-section" class="section-container">
-            <div class="inner-content">
-                <b>📦 ARCHIVE</b>
-                <div id="archive-container"></div>
-            </div>
+        <div id="archive-section" class="section-container" style="background:#333; color:white;">
+            <div class="inner-content"><b>📦 ARCHIVE</b><div id="archive-container"></div></div>
         </div>
 
         <div id="media-section" class="section-container"><div class="inner-content"><b>🎬 MEDIA</b><div id="media-container"></div></div></div>
@@ -179,17 +167,15 @@
             <div class="inner-content">
                 <b>🔒 PRIVATE (SUDO)</b>
                 <div id="private-auth-ui">
-                    <p id="private-msg">Restricted Access</p>
-                    <button class="guest-btn" style="background:white; color:black; width:auto; padding:8px 25px;" onclick="verifySudo()">Verify SUDO Identity</button>
+                    <p>Restricted Access</p>
+                    <button class="guest-btn" style="background:white; color:black; width:auto; padding:8px 25px;" onclick="verifySudo()">Verify SUDO</button>
                 </div>
-                <div id="private-container" style="display: none;">
-                    <p>Welcome, Nutchellxer. Admin Mode Active.</p>
-                </div>
+                <div id="private-container" style="display:none;"></div>
             </div>
         </div>
 
         <div id="drag-footer">
-            <div class="drag-handle" style="padding:10px; cursor:move; color:var(--blue); font-size:10px;">•••• DRAG ••••</div>
+            <div class="drag-handle" id="drag-handle">•••• DRAG TO POSITION ••••</div>
             <a href="https://vm.tiktok.com/ZS9J2r4GP6EU2-MRcbj/" class="footer-btn">TikTok</a>
             <a href="mailto:nutchellexer@gmail.com" class="footer-btn">Mail Me</a>
         </div>
@@ -197,36 +183,31 @@
 
     <script>
         const RES_URL = "https://raw.githubusercontent.com/nathansbuild63-wq/nutch-editz-res/main/";
-        const ADMIN_EMAIL = "nutchellexer@gmail.com"; 
-        const GITHUB_CLIENT_ID = "Ov23liA7Zyd7Euym0lYi"; 
-        
-        let currentUser = { name: "Guest", email: null, isSudo: false };
-        let currentVideo = null;
+        const ADMIN_EMAIL = "nutchellexer@gmail.com";
+        const GITHUB_CLIENT_ID = "Ov23liA7Zyd7Euym0lYi";
 
+        const myArchive = ["yoshi.detche", "amongus.detche", "car.detche", "1st.detche"];
+        const myFeatured = ["moza.detche", "meowsol-edit.detche", "mydog.detche"]; 
         const Mygames = ["Ascend=https://nathansbuild63-wq.github.io/Ascend/=" + RES_URL + "Ascend-logo.png"];
-        const myArchive = ["yoshi.detche", "amongus.detche", "car.detche", "1st.detche", "meowsol-edit.detche"];
-        const myFeatured = ["moza.detche", "test-edit.detche", "mydog.detche"]; 
-        const myMedia = ["amongus-bugreport-1.detche"];    
 
-        window.onload = () => {
-            if (!localStorage.getItem('nutch_cookies')) {
-                setTimeout(() => document.getElementById('cookie-popup').classList.add('show'), 2000);
-            }
-            const params = new URLSearchParams(window.location.search);
-            if (params.has('code')) {
-                document.getElementById('splash').classList.add('hidden');
-                updateProfile("GitHub User", "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png", "nutchellexer@gmail.com"); 
-                startApp();
-            } else {
-                setTimeout(() => {
-                    document.getElementById('splash').classList.add('hidden');
-                    document.getElementById('gatekeeper').style.display = 'flex';
-                }, 3000);
-            }
-        };
+        let currentUser = { name: "Guest", email: null, isSudo: false };
 
-        function onCloudflareSuccess() { document.getElementById('auth-options').style.display = 'block'; }
-        
+        // 1. SPLASH LOGIC
+        setTimeout(() => {
+            const splash = document.getElementById('splash');
+            splash.classList.add('fade-out');
+            setTimeout(() => {
+                splash.style.display = 'none';
+                document.getElementById('gatekeeper').style.display = 'flex';
+            }, 800);
+        }, 3000);
+
+        // 2. AUTH LOGIC
+        function onCloudflareSuccess() { 
+            document.getElementById('auth-options').style.display = 'block'; 
+            if(window.google) google.accounts.id.renderButton(document.querySelector(".g_id_signin"), { theme: "outline", size: "large" });
+        }
+
         function handleGoogleSignIn(response) {
             const data = JSON.parse(atob(response.credential.split('.')[1]));
             updateProfile(data.given_name, data.picture, data.email);
@@ -248,11 +229,11 @@
             if (currentUser.isSudo) {
                 document.getElementById('private-auth-ui').style.display = 'none';
                 document.getElementById('private-container').style.display = 'block';
-            } else {
-                alert(`SUDO DENIED: ${currentUser.email || "Guest"} is not authorized.`);
-            }
+                document.getElementById('private-container').innerText = "Admin Access Granted.";
+            } else { alert("SUDO DENIED."); }
         }
 
+        // 3. APP START & BUILD
         function startApp() {
             document.getElementById('gatekeeper').style.display = 'none';
             document.getElementById('app-content').style.display = 'block';
@@ -260,14 +241,29 @@
             buildGames();
         }
 
+        function createMedia(file, isFeat) {
+            const el = document.createElement('video');
+            el.className = isFeat ? 'featured-item' : 'stack';
+            el.src = RES_URL + file;
+            el.controls = true; el.poster = RES_URL + "nutchellxer.thumb";
+            el.onerror = () => { el.style.display='none'; el.insertAdjacentHTML('afterend', `<err>Missing: ${file}</err>`); };
+            return el;
+        }
+
+        function build() {
+            const feat = document.getElementById('featured-container');
+            myFeatured.forEach(f => feat.appendChild(createMedia(f, true)));
+            const arch = document.getElementById('archive-container');
+            myArchive.forEach(f => arch.appendChild(createMedia(f, false)));
+        }
+
         function buildGames() {
             const container = document.getElementById('games-container');
-            container.innerHTML = "";
             Mygames.forEach(gameStr => {
                 const [name, url, logo] = gameStr.split('=');
                 const card = document.createElement('div');
-                card.className = logo ? 'game-card logo-btn' : 'game-card text-btn';
-                card.innerHTML = logo ? `<img src="${logo}" alt="${name}">` : name;
+                card.className = 'game-card logo-btn';
+                card.innerHTML = `<img src="${logo}">`;
                 card.onclick = () => {
                     document.getElementById('active-game-name').innerText = name;
                     document.getElementById('game-frame').src = url;
@@ -278,42 +274,17 @@
         }
 
         function closeGame() { document.getElementById('game-overlay').style.display = 'none'; document.getElementById('game-frame').src = ""; }
-
-        function createMedia(file, isFeat) {
-            let el = document.createElement('video');
-            el.controls = true; el.preload = "auto"; el.muted = true;
-            el.className = isFeat ? 'featured-item' : 'stack';
-            el.src = RES_URL + file; 
-            el.poster = RES_URL + "nutchellxer.thumb";
-            el.addEventListener('play', (e) => { 
-                if (currentVideo && currentVideo !== e.target) currentVideo.pause(); 
-                currentVideo = e.target; 
-            });
-            return el;
-        }
-
-        function build() {
-            // Build Featured
-            const featCon = document.getElementById('featured-container');
-            myFeatured.forEach(f => featCon.appendChild(createMedia(f, true)));
-
-            // Build Archive (Now runs for everyone)
-            const archCon = document.getElementById('archive-container');
-            myArchive.forEach(f => archCon.appendChild(createMedia(f, false)));
-
-            // Build Media
-            const mediaCon = document.getElementById('media-container');
-            myMedia.forEach(f => mediaCon.appendChild(createMedia(f, false)));
-        }
-
-        function acceptCookies() { localStorage.setItem('nutch_cookies', 'true'); document.getElementById('cookie-popup').classList.remove('show'); }
         function toggleLogout() { const m = document.getElementById('logout-menu'); m.style.display = (m.style.display === 'block') ? 'none' : 'block'; }
 
-        // Footer Drag
+        // 4. FOOTER DRAG
         const box = document.getElementById("drag-footer");
-        let active = false, xOff = 0, yOff = 0, startX, startY;
-        box.addEventListener("touchstart", (e) => { startX = e.touches[0].clientX - xOff; startY = e.touches[0].clientY - yOff; active = true; });
-        window.addEventListener("touchmove", (e) => { if (active) { xOff = e.touches[0].clientX - startX; yOff = e.touches[0].clientY - startY; box.style.transform = `translate(${xOff}px, ${yOff}px) translateX(-50%)`; } });
+        const handle = document.getElementById("drag-handle");
+        let active = false, initialX, initialY, xOffset = 0, yOffset = 0;
+        handle.addEventListener("touchstart", (e) => { initialX = e.touches[0].clientX - xOffset; initialY = e.touches[0].clientY - yOffset; active = true; });
+        window.addEventListener("touchmove", (e) => { if (active) {
+            xOffset = e.touches[0].clientX - initialX; yOffset = e.touches[0].clientY - initialY;
+            box.style.transform = `translate(${xOffset}px, ${yOffset}px) translateX(-50%)`;
+        }});
         window.addEventListener("touchend", () => active = false);
     </script>
 </body>
