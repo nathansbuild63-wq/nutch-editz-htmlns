@@ -77,12 +77,6 @@
         .game-card.logo-btn { width: 80px; height: 80px; }
         .game-card.logo-btn img { width: 100%; height: 100%; object-fit: cover; }
 
-        #game-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #000; z-index: 100005; display: none; flex-direction: column;
-        }
-        #game-frame { width: 100%; height: calc(100% - 60px); border: none; }
-
         /* CONTENT STYLING */
         #app-content { display: none; padding: 20px; min-height: 100vh; padding-bottom: 220px; }
         .section-container { color: #000; padding: 2px; border-radius: 20px; margin: 30px auto; max-width: 550px; }
@@ -102,6 +96,7 @@
         #drag-footer { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 420px; background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(0, 98, 255, 0.4); border-radius: 24px; z-index: 9998; }
         .drag-handle { padding: 12px; cursor: move; color: var(--blue); font-size: 10px; }
         .footer-btn { display: inline-block; padding: 12px 18px; margin: 6px; background: var(--blue); color: white; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 13px; }
+        .res-btn { background: var(--gold); color: #000; }
     </style>
 </head>
 <body>
@@ -132,14 +127,6 @@
             <span id="sudo-badge">SUDO</span>
         </div>
         <div id="logout-menu" onclick="location.reload()">Logout Session</div>
-    </div>
-
-    <div id="game-overlay">
-        <div style="height:60px; display:flex; align-items:center; padding:0 20px; background:#111;">
-            <span id="active-game-name" style="font-weight:bold; color:var(--blue);">Game Name</span>
-            <button onclick="closeGame()" style="margin-left:auto; background:#ff4d4d; color:white; border:none; padding:8px 15px; border-radius:10px; font-weight:bold;">CLOSE</button>
-        </div>
-        <iframe id="game-frame"></iframe>
     </div>
 
     <div id="app-content">
@@ -178,6 +165,7 @@
             <div class="drag-handle" id="drag-handle">•••• DRAG TO POSITION ••••</div>
             <a href="https://vm.tiktok.com/ZS9J2r4GP6EU2-MRcbj/" class="footer-btn">TikTok</a>
             <a href="mailto:nutchellexer@gmail.com" class="footer-btn">Mail Me</a>
+            <a href="https://github.com/nathansbuild63-wq/nutch-editz-res" target="_blank" class="footer-btn res-btn">View Resources</a>
         </div>
     </div>
 
@@ -192,15 +180,20 @@
 
         let currentUser = { name: "Guest", email: null, isSudo: false };
 
-        // 1. SPLASH LOGIC
-        setTimeout(() => {
+        // 1. SPLASH LOGIC (Wait for video to end or 5s timeout)
+        const splashVid = document.getElementById('splashVideo');
+        const endSplash = () => {
+            if(window.splashDone) return;
+            window.splashDone = true;
             const splash = document.getElementById('splash');
             splash.classList.add('fade-out');
             setTimeout(() => {
                 splash.style.display = 'none';
                 document.getElementById('gatekeeper').style.display = 'flex';
             }, 800);
-        }, 3000);
+        };
+        splashVid.onended = endSplash;
+        setTimeout(endSplash, 5000); // Failsafe timeout
 
         // 2. AUTH LOGIC
         function onCloudflareSuccess() { 
@@ -246,6 +239,14 @@
             el.className = isFeat ? 'featured-item' : 'stack';
             el.src = RES_URL + file;
             el.controls = true; el.poster = RES_URL + "nutchellxer.thumb";
+            
+            // AUTO-PAUSE LOGIC: Stop other videos when this one plays
+            el.onplay = () => {
+                document.querySelectorAll('video').forEach(v => {
+                    if (v !== el) v.pause();
+                });
+            };
+
             el.onerror = () => { el.style.display='none'; el.insertAdjacentHTML('afterend', `<err>Missing: ${file}</err>`); };
             return el;
         }
@@ -265,15 +266,13 @@
                 card.className = 'game-card logo-btn';
                 card.innerHTML = `<img src="${logo}">`;
                 card.onclick = () => {
-                    document.getElementById('active-game-name').innerText = name;
                     document.getElementById('game-frame').src = url;
-                    document.getElementById('game-overlay').style.display = 'flex';
+                    alert("Launching " + name);
                 };
                 container.appendChild(card);
             });
         }
 
-        function closeGame() { document.getElementById('game-overlay').style.display = 'none'; document.getElementById('game-frame').src = ""; }
         function toggleLogout() { const m = document.getElementById('logout-menu'); m.style.display = (m.style.display === 'block') ? 'none' : 'block'; }
 
         // 4. FOOTER DRAG
