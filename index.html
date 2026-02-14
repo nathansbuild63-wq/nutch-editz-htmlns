@@ -97,9 +97,8 @@
         #app-content { display: none; padding: 20px; min-height: 100vh; background: radial-gradient(circle at top, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%); padding-bottom: 220px; }
         .section-container { color: #000; padding: 2px; border-radius: 20px; margin: 30px auto; max-width: 550px; }
         #featured-section { background: var(--gold); }
+        #archive-section { background: #333; color: white; } /* Dark theme for archive */
         #media-section { background: var(--orange); }
-        /* Separate section for Archive so it's not locked in Private */
-        #archive-outside-section { background: #444; color: white; }
         #private-section { background: var(--violet); color: #fff; }
         .inner-content { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); padding: 20px; border-radius: 18px; }
         .stack, .featured-item { width: 100%; max-width: 500px; margin: 25px auto; border-radius: 15px; background: var(--glass); backdrop-filter: var(--blur); display: block; }
@@ -142,10 +141,13 @@
     <div id="gatekeeper">
         <div class="auth-card">
             <h2 style="margin-top:0; color:#0062ff;">Nutchellxer Sync</h2>
-            <div id="turnstile-box">
-                <div class="cf-turnstile" data-sitekey="0x4AAAAAACbZbO-hqA8mdhlk" data-callback="onCloudflareSuccess"></div>
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAACbZbO-hqA8mdhlk" data-callback="onCloudflareSuccess"></div>
+            <div id="auth-options" style="display:none; margin-top:20px;">
+                <div id="g_id_onload" data-client_id="647540282944-usu3rkob8emv3i5rt3g4b9napi7qe7db.apps.googleusercontent.com" data-callback="handleGoogleSignIn"></div>
+                <div class="g_id_signin" data-type="standard"></div>
+                <button class="github-btn" onclick="loginGithub()">GitHub Login</button>
+                <button class="guest-btn" onclick="continueAsGuest()">Enter as Guest</button>
             </div>
-            <div id="auth-options" style="margin-top:20px;"></div>
         </div>
     </div>
 
@@ -164,10 +166,10 @@
 
         <div id="featured-section" class="section-container"><div class="inner-content"><b>⭐ FEATURED</b><div id="featured-container"></div></div></div>
         
-        <div id="archive-outside-section" class="section-container">
+        <div id="archive-section" class="section-container">
             <div class="inner-content">
-                <b>📦 MY ARCHIVE</b>
-                <div id="archive-outside-container"></div>
+                <b>📦 ARCHIVE</b>
+                <div id="archive-container"></div>
             </div>
         </div>
 
@@ -181,7 +183,7 @@
                     <button class="guest-btn" style="background:white; color:black; width:auto; padding:8px 25px;" onclick="verifySudo()">Verify SUDO Identity</button>
                 </div>
                 <div id="private-container" style="display: none;">
-                    <p>Welcome, Admin. Secret tools loaded.</p>
+                    <p>Welcome, Nutchellxer. Admin Mode Active.</p>
                 </div>
             </div>
         </div>
@@ -206,29 +208,24 @@
         const myFeatured = ["moza.detche", "test-edit.detche", "mydog.detche"]; 
         const myMedia = ["amongus-bugreport-1.detche"];    
 
-        window.addEventListener('DOMContentLoaded', () => {
+        window.onload = () => {
             if (!localStorage.getItem('nutch_cookies')) {
-                setTimeout(() => document.getElementById('cookie-popup').classList.add('show'), 4000);
+                setTimeout(() => document.getElementById('cookie-popup').classList.add('show'), 2000);
             }
-            setTimeout(() => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('code')) {
                 document.getElementById('splash').classList.add('hidden');
-                document.getElementById('gatekeeper').style.display = 'flex';
-            }, 3000);
-        });
+                updateProfile("GitHub User", "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png", "nutchellexer@gmail.com"); 
+                startApp();
+            } else {
+                setTimeout(() => {
+                    document.getElementById('splash').classList.add('hidden');
+                    document.getElementById('gatekeeper').style.display = 'flex';
+                }, 3000);
+            }
+        };
 
-        // 1. FIXED TURNSTILE -> OAUTH ORDER
-        function onCloudflareSuccess() {
-            document.getElementById('turnstile-box').style.display = 'none';
-            const authDiv = document.getElementById('auth-options');
-            authDiv.innerHTML = `
-                <div id="g_id_onload" data-client_id="647540282944-usu3rkob8emv3i5rt3g4b9napi7qe7db.apps.googleusercontent.com" data-callback="handleGoogleSignIn"></div>
-                <div class="g_id_signin" data-type="standard"></div>
-                <button class="github-btn" onclick="loginGithub()">GitHub Login</button>
-                <button class="guest-btn" onclick="continueAsGuest()">Enter as Guest</button>
-            `;
-            // Force Google script to render the button since it missed the initial page load
-            google.accounts.id.renderButton(document.querySelector(".g_id_signin"), { type: "standard" });
-        }
+        function onCloudflareSuccess() { document.getElementById('auth-options').style.display = 'block'; }
         
         function handleGoogleSignIn(response) {
             const data = JSON.parse(atob(response.credential.split('.')[1]));
@@ -259,7 +256,7 @@
         function startApp() {
             document.getElementById('gatekeeper').style.display = 'none';
             document.getElementById('app-content').style.display = 'block';
-            buildAll();
+            build();
             buildGames();
         }
 
@@ -284,7 +281,8 @@
 
         function createMedia(file, isFeat) {
             let el = document.createElement('video');
-            el.controls = true; el.muted = true; el.className = isFeat ? 'featured-item' : 'stack';
+            el.controls = true; el.preload = "auto"; el.muted = true;
+            el.className = isFeat ? 'featured-item' : 'stack';
             el.src = RES_URL + file; 
             el.poster = RES_URL + "nutchellxer.thumb";
             el.addEventListener('play', (e) => { 
@@ -294,16 +292,16 @@
             return el;
         }
 
-        function buildAll() {
-            // Featured
+        function build() {
+            // Build Featured
             const featCon = document.getElementById('featured-container');
             myFeatured.forEach(f => featCon.appendChild(createMedia(f, true)));
-            
-            // Archive (Outside Private)
-            const archCon = document.getElementById('archive-outside-container');
+
+            // Build Archive (Now runs for everyone)
+            const archCon = document.getElementById('archive-container');
             myArchive.forEach(f => archCon.appendChild(createMedia(f, false)));
 
-            // Media
+            // Build Media
             const mediaCon = document.getElementById('media-container');
             myMedia.forEach(f => mediaCon.appendChild(createMedia(f, false)));
         }
@@ -316,7 +314,7 @@
         let active = false, xOff = 0, yOff = 0, startX, startY;
         box.addEventListener("touchstart", (e) => { startX = e.touches[0].clientX - xOff; startY = e.touches[0].clientY - yOff; active = true; });
         window.addEventListener("touchmove", (e) => { if (active) { xOff = e.touches[0].clientX - startX; yOff = e.touches[0].clientY - startY; box.style.transform = `translate(${xOff}px, ${yOff}px) translateX(-50%)`; } });
-        window.addEventListener("touchend", () => { active = false; });
+        window.addEventListener("touchend", () => active = false);
     </script>
 </body>
 </html>
